@@ -1,5 +1,5 @@
 'use client';
-import { AGENTS } from './chat-panel';
+import { AGENTS } from '@/lib/agents-config';
 
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
