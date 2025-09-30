@@ -37,12 +37,7 @@ export default function MainContent() {
     };
 
     return (
-      <main className="flex flex-1 overflow-hidden">
-        {/* Workflow Tree Sidebar - Always visible */}
-        <div className="w-80 border-r">
-          <EnhancedWorkflowTree className="h-full" />
-        </div>
-        
+      <main className="flex flex-1 overflow-hidden relative">
         {/* Main Content Area */}
         <div className="flex flex-1 overflow-hidden">
           <div style={{ width: `${leftPanelPct}%` }} className="min-w-[30%] max-w-[70%]" >
@@ -57,6 +52,9 @@ export default function MainContent() {
             <EnhancedDataPanel className="w-full h-full" />
           </div>
         </div>
+        
+        {/* Workflow Drawer - Hidden by default, slides in from left */}
+        <EnhancedWorkflowTree />
       </main>
     );
   }
