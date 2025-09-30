@@ -4,6 +4,7 @@ import React from "react";
 import { useApp } from "./app-provider";
 import EnhancedDataPanel from "./enhanced-data-panel";
 import EnhancedChatPanel from "./enhanced-chat-panel";
+import EnhancedWorkflowTree from "./enhanced-workflow-tree";
 import WelcomeHero from "./welcome-hero";
 
 export default function MainContent() {
