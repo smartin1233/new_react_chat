@@ -362,7 +362,15 @@ export class EnhancedAPIClient {
     if (error.status === 429) {
       return new Error('Rate limit exceeded. Please wait a moment before trying again.');
     } else if (error.status === 401) {
-      return new Error('Invalid API key. Please check your configuration in settings.');
+      // Check if we have any valid API keys
+      const hasValidOpenAI = this.config.openaiKey && this.config.openaiKey.length > 20;
+      const hasValidOpenRouter = this.config.openrouterKey && this.config.openrouterKey.length > 20;
+      
+      if (!hasValidOpenAI && !hasValidOpenRouter) {
+        return new Error('🔑 API Configuration Required: Please configure your API keys in Settings to continue. You can use either OpenAI or OpenRouter keys.');
+      } else {
+        return new Error('Invalid API key detected. Please check your configuration in Settings or try switching to the alternative provider.');
+      }
     } else if (error.status >= 500) {
       return new Error('AI service temporarily unavailable. Please try again later.');
     } else if (error.code === 'ENOTFOUND' || error.code === 'ECONNREFUSED') {
