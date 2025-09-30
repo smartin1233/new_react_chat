@@ -36,7 +36,15 @@ interface ForecastData {
 export default function BIDashboard() {
   const { state } = useApp();
   
-  // Generate KPIs and metrics
+  // Generate dynamic dashboard configuration based on conversation context
+  const dashboardConfig = useMemo(() => {
+    return dynamicInsightsAnalyzer.generateDynamicDashboard(
+      state.conversationContext || { topics: [], currentPhase: 'onboarding', completedTasks: [], userIntent: '' },
+      state.selectedLob?.hasData || false
+    );
+  }, [state.conversationContext, state.selectedLob?.hasData]);
+  
+  // Generate KPIs and metrics based on dashboard config
   const kpis = useMemo(() => {
     if (!state.selectedLob?.mockData) return [];
     
