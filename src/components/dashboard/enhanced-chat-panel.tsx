@@ -469,6 +469,17 @@ class EnhancedMultiAgentChatHandler {
     
     this.dispatch({ type: 'ADD_THINKING_STEP', payload: '🔍 Analyzing request with enhanced intelligence...' });
 
+    // Analyze user intent and update conversation context
+    const intentAnalysis = dynamicInsightsAnalyzer.analyzeUserIntent(sanitizedMessage);
+    this.dispatch({
+      type: 'UPDATE_CONVERSATION_CONTEXT',
+      payload: {
+        topics: [...new Set([...(context.conversationContext?.topics || []), ...intentAnalysis.topics])],
+        currentPhase: intentAnalysis.phase,
+        userIntent: intentAnalysis.intent
+      }
+    });
+
     // Select optimal agents and workflow
     const { agents, workflow, reasoning } = this.selectOptimalAgents(sanitizedMessage, context);
     
