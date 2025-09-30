@@ -853,10 +853,34 @@ function EnhancedChatBubble({
                 __html: message.content
                   .replace(/\[WORKFLOW_PLAN\][\s\S]*?\[\/WORKFLOW_PLAN\]/, '')
                   .replace(/\[REPORT_DATA\][\s\S]*?\[\/REPORT_DATA\]/, '')
+                  // Headers
+                  .replace(/### (.*?)$/gm, '<h4 class="text-sm font-semibold mt-3 mb-2 text-foreground">$1</h4>')
                   .replace(/## (.*?)$/gm, '<h3 class="text-base font-semibold mt-4 mb-2 text-foreground">$1</h3>')
-                  .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold">$1</strong>')
-                  .replace(/• (.*?)(?=\n|$)/g, '<li class="ml-4">$1</li>')
-                  .replace(/\n/g, '<br />') 
+                  .replace(/# (.*?)$/gm, '<h2 class="text-lg font-bold mt-4 mb-3 text-foreground">$1</h2>')
+                  // Bold text
+                  .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-foreground">$1</strong>')
+                  // Tables - convert simple markdown tables
+                  .replace(/\|(.*?)\|/g, (match, content) => {
+                    const cells = content.split('|').map(cell => `<td class="border px-2 py-1 text-xs">${cell.trim()}</td>`).join('');
+                    return `<tr>${cells}</tr>`;
+                  })
+                  // Numbered lists
+                  .replace(/^(\d+)\.\s+(.*?)$/gm, '<div class="flex gap-2 my-1"><span class="text-primary font-medium min-w-[20px]">$1.</span><span>$2</span></div>')
+                  // Bullet points - better formatting
+                  .replace(/^[•\-\*]\s+(.*?)$/gm, '<div class="flex gap-2 my-1"><span class="text-primary">•</span><span>$1</span></div>')
+                  // Nested bullet points
+                  .replace(/^\s+[•\-\*]\s+(.*?)$/gm, '<div class="flex gap-2 my-1 ml-4"><span class="text-muted-foreground">◦</span><span class="text-sm">$1</span></div>')
+                  // Code blocks
+                  .replace(/`([^`]+)`/g, '<code class="bg-muted px-1 py-0.5 rounded text-xs font-mono">$1</code>')
+                  // Percentages and numbers highlighting
+                  .replace(/(\d+\.?\d*%)/g, '<span class="font-semibold text-green-600 dark:text-green-400">$1</span>')
+                  .replace(/(\$[\d,]+)/g, '<span class="font-semibold text-blue-600 dark:text-blue-400">$1</span>')
+                  // Line breaks
+                  .replace(/\n\n/g, '</p><p class="mb-2">')
+                  .replace(/\n/g, '<br />')
+                  // Wrap in paragraphs
+                  .replace(/^/, '<p class="mb-2">')
+                  .replace(/$/, '</p>')
               }} 
             />
           )}
