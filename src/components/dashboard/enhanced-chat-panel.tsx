@@ -496,7 +496,7 @@ class EnhancedMultiAgentChatHandler {
         this.conversationHistory.push({ role: "user", content: sanitizedMessage });
 
         const completion = await enhancedAPIClient.createChatCompletion({
-          model: "gpt-4o-mini",
+          model: undefined, // Let the client choose the appropriate model based on provider
           messages: [
             { role: "system", content: systemPrompt },
             ...this.conversationHistory.slice(-10) // Keep recent context
