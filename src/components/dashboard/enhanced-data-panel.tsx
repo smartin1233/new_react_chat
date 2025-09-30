@@ -13,6 +13,7 @@ import { useApp } from "./app-provider";
 import BuLobSelector from "./bu-lob-selector";
 import EnhancedDataVisualizer from "./enhanced-data-visualizer";
 import { statisticalAnalyzer, insightsGenerator, type DataPoint } from "@/lib/statistical-analysis";
+import BIDashboard from './bi-dashboard';
 import { 
   TrendingUp, TrendingDown, AlertTriangle, CheckCircle, 
   BarChart3, PieChart, LineChart, Activity, Target, 
