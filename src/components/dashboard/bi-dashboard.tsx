@@ -435,6 +435,7 @@ export default function BIDashboard() {
             )}
           </CardContent>
         </Card>
+        )}
       </div>
 
       {/* Insights and Recommendations */}
