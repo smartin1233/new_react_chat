@@ -89,6 +89,12 @@ const initialState: AppState = {
   dataPanelWidthPct: 40,
   isOnboarding: true,
   queuedUserPrompt: null,
+  conversationContext: {
+    topics: [],
+    currentPhase: 'onboarding',
+    completedTasks: [],
+    userIntent: ''
+  }
 };
 
 const getRandomColor = () => {
