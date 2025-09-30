@@ -370,16 +370,18 @@ export default function BIDashboard() {
             </div>
           </CardContent>
         </Card>
+        )}
 
-        {/* Model Performance */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Target className="h-5 w-5" />
-              Model Performance Metrics
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+        {/* Model Performance - Only show if modeling is relevant */}
+        {dashboardConfig.showModelMetrics && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Target className="h-5 w-5" />
+                Model Performance Metrics
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
             {modelMetrics && (
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
