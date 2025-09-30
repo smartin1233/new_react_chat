@@ -1,0 +1,83 @@
+<analysis>
+The trajectory outlines the end-to-end optimization of a sophisticated Business Intelligence (BI) and forecasting application built with Next.js and a multi-agent AI backend using Google Genkit. The initial request was a broad optimization task. The AI engineer began by exploring the codebase, understanding the agentic architecture from , and then proposed a phased optimization plan.
+
+The development process was highly iterative, driven by user feedback. Key challenges and solutions included:
+1.  **API Key Management:** The initial OpenAI key was invalid. The engineer implemented a robust fallback system, switching to a provided OpenRouter key and adding a UI for users to input their own keys if both automated options fail.
+2.  **Onboarding Flow:** The user reported a broken Business Unit/Line of Business (BU/LOB) selection process. The engineer debugged the state management (), corrected the component logic (), and refined the user flow to show contextual prompts on the welcome screen *before* transitioning to the main chat interface.
+3.  **UI/UX Enhancements:** Based on detailed feedback, the engineer transformed static UI elements into dynamic, contextual components. The persistent workflow sidebar became a collapsible drawer, the insights panel was integrated into a BI dashboard, and response formatting was improved. The dashboard and workflow were then modified to display information dynamically based on the user's conversational context.
+
+The last action was an attempt to build the application after making these UI components dynamic, which resulted in a compilation error in . The immediate next step is to resolve this build failure.
+</analysis>
+
+<product_requirements>
+The goal is to optimize and enhance a multi-agent AI application designed for business intelligence and forecasting. The application serves as a comprehensive onboarding agent that guides users through data analysis, cleaning, processing, EDA, model training, evaluation, forecasting, and the generation of dynamic reports and dashboards.
+
+**Core Requirements:**
+1.  **End-to-End Optimization:** Improve performance, statistical/mathematical insight generation, UI/UX, and agentic workflows.
+2.  **Robust API Handling:** Implement a fallback mechanism for API keys. If the primary OpenAI key fails, automatically switch to the OpenRouter key. If both fail, the UI must prompt the user to provide a valid key.
+3.  **Intuitive Onboarding Flow:**
+    *   Upon selecting a Business Unit (BU) and Line of Business (LOB), the user should remain on the welcome screen.
+    *   The initial prompts on the welcome screen must update contextually based on the selected BU/LOB.
+    *   The application should only transition to the main chat/dashboard interface *after* the user interacts with a contextual prompt or sends a message.
+4.  **Dynamic & Contextual UI:**
+    *   The insights panel and workflow display must be dynamic, showing information relevant only to the user's current query and conversation history.
+    *   The insights panel should function as a true BI dashboard, presenting KPIs, charts, forecast data (past vs. future), and model evaluation metrics (e.g., MAPE) when applicable.
+    *   The workflow view must be a collapsible drawer, not a persistent sidebar, and should dynamically indicate the currently active agent.
+    *   Agent responses containing structured data (lists, tables) must be formatted correctly in the chat interface.
+</product_requirements>
+
+<key_technical_concepts>
+- **Frameworks:** Next.js (with Turbopack), React, TypeScript, Tailwind CSS.
+- **AI & Backend:** Google Genkit framework for creating agentic flows, utilizing a Google AI model (Gemini). Multi-agent orchestration for complex data processing tasks.
+- **State Management:** React Context API and  hook () for centralized application state.
+- **API Integration:** Custom API client with fallback logic between OpenAI and OpenRouter services.
+- **UI Libraries:** Radix UI for accessible, unstyled components (Dropdowns, Dialogs),  for data visualization.
+</key_technical_concepts>
+
+<code_architecture>
+The application is a standard Next.js project with a  directory. The architecture separates concerns into AI logic, UI components, and shared libraries/utilities.
+
+
+
+- ****
+  - **Importance:** Manages the entire application's global state, including UI state (like onboarding status), messages, and conversation context, using React's . It's the central hub for state transitions.
+  - **Changes:** Heavily modified to fix the onboarding flow by controlling the  state correctly. Logic was added to dispatch an  action only upon user interaction from the welcome screen. State was also expanded to track  for dynamic UI rendering.
+
+- ****
+  - **Importance:** Centralizes all interactions with external AI model providers (OpenAI, OpenRouter).
+  - **Changes:** Created from scratch to implement robust API key management. It handles an invalid OpenAI key by automatically falling back to a working OpenRouter key. It was later enhanced to prompt the user for a key via the UI if all configured keys fail.
+
+- ****
+  - **Importance:** The initial screen the user sees. It contains the BU/LOB selector and a list of initial prompts.
+  - **Changes:** The prompt generation logic was updated to be dynamic. It now displays generic prompts initially and switches to contextual, advanced analysis prompts after a valid BU/LOB with data is selected.
+
+- ****
+  - **Importance:** A newly created component designed to replace a simple data panel with a full-fledged, dynamic BI dashboard.
+  - **Changes:** Created to display KPIs, charts, and forecast details. Its rendering logic is tied to the  from , ensuring it only shows widgets relevant to the user's requests (e.g., forecast charts only appear after a forecast has been run).
+
+- ****
+  - **Importance:** Visualizes the agentic workflow execution.
+  - **Changes:** Refactored from a static, always-visible sidebar into a collapsible drawer component to improve the main UI's focus and screen real estate. It was also updated to be dynamic based on the conversation context.
+</code_architecture>
+
+<pending_tasks>
+- Fix the current build failure caused by a syntax error in .
+- Fully test the dynamic functionality of the BI Dashboard and Workflow Drawer to ensure they update correctly based on the conversation context.
+- Verify that agent execution is successful after the API key and onboarding flow fixes.
+</pending_tasks>
+
+<current_work>
+Immediately before this summary request, the AI engineer was implementing the user's feedback to make the UI more dynamic and contextual. This involved a major refactor of the insights panel and workflow view.
+
+The following actions were taken:
+1.  **State Management Update:** The global state in  was extended to include a  object. This tracks the user's intent and completed actions (e.g., 'data_exploration', 'forecasting').
+2.  **Context Analysis Logic:** A new utility file, , was created to process the conversation history and determine what UI elements should be visible.
+3.  **Dynamic BI Dashboard:** The  component was heavily modified to conditionally render different sections (KPIs, EDA charts, forecast results) based on the .
+4.  **Dynamic Workflow Drawer:** The  was updated to reflect the current state of the agentic flow dynamically.
+
+This work culminated in an attempt to build the application, which failed with a compilation error originating from . The engineer had identified this as a syntax error and was about to fix it.
+</current_work>
+
+<optional_next_step>
+Fix the syntax error in  to resolve the build failure and get the application running again.
+</optional_next_step>
