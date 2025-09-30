@@ -46,7 +46,7 @@ export default function MainContent() {
           title="Drag to resize"
         />
         <div style={{ width: `${rightPanelPct}%` }} className="flex flex-col overflow-hidden">
-          <DataPanel className="w-full h-full" />
+          <EnhancedDataPanel className="w-full h-full" />
         </div>
       </main>
     );
