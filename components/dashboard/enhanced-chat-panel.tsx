@@ -918,6 +918,7 @@ export default function EnhancedChatPanel({ className }: { className?: string })
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [performance, setPerformance] = useState<any>(null);
+  const [showAPISettings, setShowAPISettings] = useState(false);
 
   // Initialize enhanced chat handler
   if (!enhancedChatHandler) {
