@@ -152,7 +152,7 @@ const SettingsDropdown = ({ onGenerateReport, isReportGenerating }: { onGenerate
                     <DialogHeader>
                         <DialogTitle>Agent Activity Monitor</DialogTitle>
                     </DialogHeader>
-                    <AgentMonitorPanel className="flex-1 min-h-0" />
+                    <EnhancedAgentMonitor className="flex-1 min-h-0" />
                 </DialogContent>
             </Dialog>
         </>
