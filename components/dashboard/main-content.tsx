@@ -38,16 +38,24 @@ export default function MainContent() {
 
     return (
       <main className="flex flex-1 overflow-hidden">
-        <div style={{ width: `${leftPanelPct}%` }} className="min-w-[20%] max-w-[70%]" >
-          <EnhancedChatPanel className="flex-1" />
+        {/* Workflow Tree Sidebar - Always visible */}
+        <div className="w-80 border-r">
+          <EnhancedWorkflowTree className="h-full" />
         </div>
-        <div
-          onMouseDown={onMouseDown}
-          className="w-1 cursor-col-resize bg-border hover:bg-primary/40 transition-colors"
-          title="Drag to resize"
-        />
-        <div style={{ width: `${rightPanelPct}%` }} className="flex flex-col overflow-hidden">
-          <EnhancedDataPanel className="w-full h-full" />
+        
+        {/* Main Content Area */}
+        <div className="flex flex-1 overflow-hidden">
+          <div style={{ width: `${leftPanelPct}%` }} className="min-w-[30%] max-w-[70%]" >
+            <EnhancedChatPanel className="flex-1" />
+          </div>
+          <div
+            onMouseDown={onMouseDown}
+            className="w-1 cursor-col-resize bg-border hover:bg-primary/40 transition-colors"
+            title="Drag to resize"
+          />
+          <div style={{ width: `${rightPanelPct}%` }} className="flex flex-col overflow-hidden">
+            <EnhancedDataPanel className="w-full h-full" />
+          </div>
         </div>
       </main>
     );
