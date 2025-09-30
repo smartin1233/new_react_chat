@@ -317,8 +317,11 @@ export class EnhancedAPIClient {
     const { provider, model, messages, temperature, max_tokens } = params;
     
     const client = provider === 'openai' ? this.openaiClient : this.openrouterClient;
-    if (!client) {
-      throw new Error(`${provider} client not initialized. Please check your API key.`);
+    const apiKey = provider === 'openai' ? this.config.openaiKey : this.config.openrouterKey;
+    
+    if (!client || !apiKey || apiKey.length < 20) {
+      const providerName = provider === 'openai' ? 'OpenAI' : 'OpenRouter';
+      throw new Error(`🔑 ${providerName} API key not configured. Please add your ${providerName} API key in Settings to continue.`);
     }
 
     // Rate limiting check
