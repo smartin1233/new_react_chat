@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useApp } from "./app-provider";
-import DataPanel from "./data-panel";
+import EnhancedDataPanel from "./enhanced-data-panel";
 import EnhancedChatPanel from "./enhanced-chat-panel";
 import WelcomeHero from "./welcome-hero";
 
