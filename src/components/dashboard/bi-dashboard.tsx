@@ -438,16 +438,101 @@ export default function BIDashboard() {
         )}
       </div>
 
-      {/* Insights and Recommendations */}
+      {/* Dynamic Insights and Recommendations */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Zap className="h-5 w-5" />
-              AI-Generated Insights
+              Context-Aware Insights
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
+            {/* Dynamic insights based on conversation context */}
+            {dashboardConfig.relevantInsights.map(insight => (
+              <div 
+                key={insight.id}
+                className={cn(
+                  "flex items-start gap-3 p-3 border rounded",
+                  insight.type === 'business_opportunity' && "bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-800",
+                  insight.type === 'data_quality' && "bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-800",
+                  insight.type === 'forecast' && "bg-purple-50 dark:bg-purple-950/20 border-purple-200 dark:border-purple-800",
+                  insight.type === 'model_performance' && "bg-indigo-50 dark:bg-indigo-950/20 border-indigo-200 dark:border-indigo-800",
+                  insight.type === 'pattern' && "bg-yellow-50 dark:bg-yellow-950/20 border-yellow-200 dark:border-yellow-800",
+                  insight.type === 'risk' && "bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-800"
+                )}
+              >
+                <div className="flex-shrink-0 mt-0.5">
+                  {insight.type === 'business_opportunity' && <CheckCircle className="h-5 w-5 text-green-600" />}
+                  {insight.type === 'data_quality' && <Eye className="h-5 w-5 text-blue-600" />}
+                  {insight.type === 'forecast' && <TrendingUp className="h-5 w-5 text-purple-600" />}
+                  {insight.type === 'model_performance' && <Target className="h-5 w-5 text-indigo-600" />}
+                  {insight.type === 'pattern' && <Eye className="h-5 w-5 text-yellow-600" />}
+                  {insight.type === 'risk' && <AlertTriangle className="h-5 w-5 text-red-600" />}
+                </div>
+                <div className="flex-1">
+                  <div className="font-medium text-sm mb-1">{insight.title}</div>
+                  <div className="text-sm text-muted-foreground mb-2">{insight.description}</div>
+                  <div className="text-xs bg-white dark:bg-gray-800 p-2 rounded border-l-2 border-primary">
+                    <div className="font-medium mb-1">Business Value:</div>
+                    <div className="mb-2">{insight.businessValue}</div>
+                    {insight.nextAction && (
+                      <div>
+                        <div className="font-medium mb-1">Next Action:</div>
+                        <div>{insight.nextAction}</div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+            
+            {dashboardConfig.relevantInsights.length === 0 && (
+              <div className="text-center py-8 text-muted-foreground">
+                <Zap className="mx-auto h-12 w-12 opacity-50 mb-2" />
+                <p>Continue your analysis to generate contextual insights</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Target className="h-5 w-5" />
+              Next Steps for You
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {/* Dynamic next steps based on current phase */}
+            {dynamicInsightsAnalyzer.getNextSteps(
+              state.conversationContext?.currentPhase || 'onboarding',
+              state.conversationContext?.completedTasks || []
+            ).map((step, index) => (
+              <div key={index} className="flex items-start gap-3 p-3 bg-muted/30 rounded">
+                <div className="flex-shrink-0 w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-xs font-medium">
+                  {index + 1}
+                </div>
+                <div className="flex-1 text-sm">{step}</div>
+              </div>
+            ))}
+            
+            <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded">
+              <div className="text-sm font-medium text-blue-800 dark:text-blue-200 mb-1">
+                Current Phase: {state.conversationContext?.currentPhase?.charAt(0).toUpperCase() + state.conversationContext?.currentPhase?.slice(1) || 'Getting Started'}
+              </div>
+              {state.conversationContext?.userIntent && (
+                <div className="text-xs text-blue-700 dark:text-blue-300">
+                  {state.conversationContext.userIntent}
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}
             <div className="flex items-start gap-3 p-3 bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded">
               <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
               <div>
