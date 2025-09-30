@@ -1135,13 +1135,30 @@ export default function EnhancedChatPanel({ className }: { className?: string })
 
     } catch (error) {
       console.error("Enhanced AI Error:", error);
+      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred. Please try again.';
+      
+      // Check if this is an API key related error
+      const isAPIKeyError = errorMessage.includes('🔑') || errorMessage.includes('API key');
+      
+      let suggestions = ['Try a simpler query', 'Check your connection', 'Upload data first'];
+      
+      if (isAPIKeyError) {
+        suggestions = [
+          'Open API Settings', 
+          'Configure OpenAI Key', 
+          'Configure OpenRouter Key',
+          'Test API Connection'
+        ];
+      }
+      
       dispatch({ 
         type: 'UPDATE_LAST_MESSAGE', 
         payload: {
-          content: `⚠️ ${error instanceof Error ? error.message : 'An unexpected error occurred. Please try again.'}`,
+          content: `⚠️ ${errorMessage}${isAPIKeyError ? '\n\n**Next Steps:**\n1. Click the Settings button below\n2. Add your OpenAI or OpenRouter API key\n3. Test the connection\n4. Try your request again' : ''}`,
           isTyping: false,
           agentType: 'general',
-          suggestions: ['Try a simpler query', 'Check your connection', 'Upload data first']
+          suggestions,
+          requiresAPISetup: isAPIKeyError
         }
       });
       dispatch({ type: 'SET_PROCESSING', payload: false });
