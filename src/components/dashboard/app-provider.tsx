@@ -259,6 +259,14 @@ function appReducer(state: AppState, action: Action): AppState {
     // Could add logic to save report, update state, etc.
     return state;
   }
+  case 'UPDATE_CONVERSATION_CONTEXT':
+    return {
+      ...state,
+      conversationContext: {
+        ...state.conversationContext,
+        ...action.payload
+      }
+    };
   default:
       return state;
   }
