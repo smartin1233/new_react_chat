@@ -17,6 +17,7 @@ import EnhancedAgentMonitor from './enhanced-agent-monitor';
 import DataVisualizer from './data-visualizer';
 import { enhancedAPIClient, validateChatMessage, sanitizeUserInput } from '@/lib/enhanced-api-client';
 import { statisticalAnalyzer, insightsGenerator, type DataPoint } from '@/lib/statistical-analysis';
+import APISettingsDialog from './api-settings-dialog';
 
 type AgentConfig = {
   name: string;
