@@ -285,8 +285,12 @@ export default function APISettingsDialog({ open, onOpenChange }: APISettingsDia
                   <Alert>
                     <Info className="h-4 w-4" />
                     <AlertDescription>
-                      OpenRouter provides access to free models like GPT-OSS-20B. 
-                      Get your key from <a href="https://openrouter.ai/keys" target="_blank" className="underline">openrouter.ai</a>
+                      <strong>OpenRouter Setup (Recommended for Free Usage):</strong><br/>
+                      1. Visit <a href="https://openrouter.ai/keys" target="_blank" className="underline font-medium">openrouter.ai/keys</a><br/>
+                      2. Sign up with Google/GitHub (free)<br/>
+                      3. Generate API key (no billing required)<br/>
+                      4. Copy and paste your key above<br/>
+                      <span className="text-xs text-green-600 font-medium">✅ Free tier: $1 credit + free models available</span>
                     </AlertDescription>
                   </Alert>
                 </CardContent>
