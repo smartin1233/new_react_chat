@@ -55,7 +55,7 @@ export default function MainContent() {
   return (
     <main className="flex flex-1 overflow-hidden">
       <div className="w-full flex flex-col overflow-hidden">
-        <ChatPanel className="flex-1" />
+        <EnhancedChatPanel className="flex-1" />
       </div>
     </main>
   );
