@@ -46,7 +46,7 @@ export default function BIDashboard() {
   
   // Generate KPIs and metrics based on dashboard config
   const kpis = useMemo(() => {
-    if (!state.selectedLob?.mockData) return [];
+    if (!state.selectedLob?.mockData || !dashboardConfig.showBusinessMetrics) return [];
     
     const data = state.selectedLob.mockData;
     const currentValue = data[data.length - 1]?.Value || 0;
@@ -59,60 +59,61 @@ export default function BIDashboard() {
     const avgOrders = totalOrders / data.length;
     const efficiency = avgValue / avgOrders;
     
-    const kpiData: KPIMetric[] = [
-      {
+    const allKPIs = {
+      current_value: {
         label: "Current Value",
         value: currentValue.toLocaleString(),
         change: change,
-        changeType: change > 0 ? 'positive' : change < 0 ? 'negative' : 'neutral',
-        trend: change > 5 ? 'up' : change < -5 ? 'down' : 'stable',
+        changeType: change > 0 ? 'positive' : change < 0 ? 'negative' : 'neutral' as const,
+        trend: change > 5 ? 'up' : change < -5 ? 'down' : 'stable' as const,
         target: avgValue * 1.1,
         unit: "$"
       },
-      {
+      total_revenue: {
         label: "Total Revenue",
         value: (totalValue / 1000).toFixed(1) + "K",
-        change: Math.random() * 20 - 10, // Simulated
-        changeType: 'positive',
-        trend: 'up',
+        change: Math.random() * 20 - 10,
+        changeType: 'positive' as const,
+        trend: 'up' as const,
         unit: "$"
       },
-      {
+      total_orders: {
         label: "Orders",
         value: totalOrders.toLocaleString(),
         change: Math.random() * 15 - 5,
-        changeType: 'positive', 
-        trend: 'up'
+        changeType: 'positive' as const, 
+        trend: 'up' as const
       },
-      {
+      efficiency: {
         label: "Efficiency",
         value: efficiency.toFixed(2),
         change: Math.random() * 10 - 2,
-        changeType: 'positive',
-        trend: 'up',
+        changeType: 'positive' as const,
+        trend: 'up' as const,
         target: efficiency * 1.05,
         unit: "$/order"
       },
-      {
+      growth_rate: {
         label: "Growth Rate",
         value: change.toFixed(1) + "%",
         change: change,
-        changeType: change > 0 ? 'positive' : 'negative',
-        trend: change > 0 ? 'up' : 'down',
+        changeType: change > 0 ? 'positive' : 'negative' as const,
+        trend: change > 0 ? 'up' : 'down' as const,
         target: 15
       },
-      {
+      data_quality: {
         label: "Data Quality",
         value: state.selectedLob?.dataQuality?.completeness + "%",
         change: 5,
-        changeType: 'positive',
-        trend: 'stable',
+        changeType: 'positive' as const,
+        trend: 'stable' as const,
         target: 95
       }
-    ];
+    };
     
-    return kpiData;
-  }, [state.selectedLob]);
+    // Filter KPIs based on dashboard config
+    return dashboardConfig.kpisToShow.map(kpiKey => allKPIs[kpiKey as keyof typeof allKPIs]).filter(Boolean);
+  }, [state.selectedLob, dashboardConfig]);
 
   // Generate forecast data with confidence intervals
   const forecastData = useMemo(() => {
