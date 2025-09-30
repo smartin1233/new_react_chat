@@ -92,23 +92,11 @@ function appReducer(state: AppState, action: Action): AppState {
   switch (action.type) {
     case 'SET_API_KEY':
       return { ...state, apiKey: action.payload };
-    case 'SET_SELECTED_BU': {
-      const newState = { ...state, selectedBu: action.payload, selectedLob: action.payload?.lobs[0] || null, workflow: [], isProcessing: false };
-      // Auto-end onboarding if both BU and LOB are selected
-      if (newState.selectedBu && newState.selectedLob) {
-        newState.isOnboarding = false;
-      }
-      return newState;
-    }
-    case 'SET_SELECTED_LOB': {
+    case 'SET_SELECTED_BU':
+      return { ...state, selectedBu: action.payload, selectedLob: action.payload?.lobs[0] || null, workflow: [], isProcessing: false };
+    case 'SET_SELECTED_LOB':
         const isStillProcessingOnLobChange = state.workflow.some(step => step.status === 'active' || step.status === 'pending');
-        const newState = { ...state, selectedLob: action.payload, workflow: [], isProcessing: isStillProcessingOnLobChange };
-        // Auto-end onboarding if both BU and LOB are selected
-        if (newState.selectedBu && newState.selectedLob) {
-          newState.isOnboarding = false;
-        }
-        return newState;
-    }
+        return { ...state, selectedLob: action.payload, workflow: [], isProcessing: isStillProcessingOnLobChange };
     case 'ADD_MESSAGE': {
       const messages = state.messages.filter(m => !m.isTyping || action.payload.isTyping);
       return { ...state, messages: [...messages, action.payload] };
