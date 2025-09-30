@@ -558,11 +558,13 @@ export default function EnhancedWorkflowTree({ className }: { className?: string
             <div className="text-center text-sm text-muted-foreground py-10 px-4">
               <GitMerge className="mx-auto h-12 w-12 text-muted-foreground/50 mb-4" />
               <p className="font-medium">No Active Workflow</p>
-              <p>Ask the assistant to start a comprehensive analysis to see the enhanced workflow visualization here.</p>
-              <Button size="sm" variant="outline" className="mt-3">
-                <Brain className="h-3 w-3 mr-1" />
-                Start Analysis
-              </Button>
+              <p>Start asking questions to see which business analysts are working on your request in real-time.</p>
+              <div className="mt-4 text-xs space-y-1">
+                <p><strong>Try asking:</strong></p>
+                <p>• "Explore my data patterns"</p>
+                <p>• "Generate a forecast"</p>
+                <p>• "Clean and prepare my data"</p>
+              </div>
             </div>
           )}
         </div>
