@@ -1233,6 +1233,17 @@ export default function EnhancedChatPanel({ className }: { className?: string })
                       <BarChart className="h-4 w-4 mr-1" />
                       Insights Panel
                     </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      type="button" 
+                      onClick={() => setShowAPISettings(true)}
+                      title="API Settings"
+                      disabled={isAssistantTyping}
+                    >
+                      <Settings className="h-4 w-4 mr-1" />
+                      Settings
+                    </Button>
                   </div>
                   
                   {performance && (
