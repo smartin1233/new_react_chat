@@ -21,6 +21,12 @@ type AppState = {
   dataPanelWidthPct: number; // 20 - 70
   isOnboarding: boolean;
   queuedUserPrompt?: string | null;
+  conversationContext: {
+    topics: string[]; // e.g., ['data_exploration', 'forecasting', 'modeling']
+    currentPhase: 'onboarding' | 'exploration' | 'analysis' | 'modeling' | 'forecasting' | 'insights';
+    completedTasks: string[];
+    userIntent: string; // Simple description of what user wants to achieve
+  };
 };
 
 type Action =
