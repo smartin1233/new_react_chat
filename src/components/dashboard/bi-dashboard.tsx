@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { useApp } from "./app-provider";
 import { statisticalAnalyzer, insightsGenerator } from "@/lib/statistical-analysis";
+import { dynamicInsightsAnalyzer } from "@/lib/dynamic-insights-analyzer";
 import { cn } from "@/lib/utils";
 
 interface KPIMetric {
