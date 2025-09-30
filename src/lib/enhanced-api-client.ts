@@ -299,7 +299,20 @@ export class EnhancedAPIClient {
           return { ...result, fallbackUsed: true, fallbackProvider };
         } catch (fallbackError) {
           console.error('Fallback also failed:', fallbackError);
-          throw this.handleError(fallbackError);
+          
+          // If both providers failed, provide specific guidance
+          const hasOpenAI = this.config.openaiKey && this.config.openaiKey.length > 20;
+          const hasOpenRouter = this.config.openrouterKey && this.config.openrouterKey.length > 20;
+          
+          if (!hasOpenAI && !hasOpenRouter) {
+            throw new Error('🔑 No API keys configured. Please add either:\n\n• OpenAI API key (sk-proj-...)\n• OpenRouter API key (sk-or-v1-...)\n\nClick Settings to configure your keys.');
+          } else if (!hasOpenAI) {
+            throw new Error('🔑 OpenRouter failed and no OpenAI backup configured. Please add an OpenAI API key in Settings.');
+          } else if (!hasOpenRouter) {
+            throw new Error('🔑 OpenAI failed and no OpenRouter backup configured. Please add an OpenRouter API key in Settings.');
+          } else {
+            throw new Error('🔑 Both API providers are currently unavailable. Please check your API keys in Settings or try again later.');
+          }
         }
       } else {
         throw this.handleError(error);
