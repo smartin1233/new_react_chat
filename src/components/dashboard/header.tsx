@@ -15,7 +15,7 @@ import { Settings, User, Bot, BarChart, Sun, Moon, FileText, Printer, UploadClou
 import placeholderImages from '@/lib/placeholder-images.json';
 import { useApp } from './app-provider';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import AgentMonitorPanel from './agent-monitor';
+import EnhancedAgentMonitor from './enhanced-agent-monitor';
 import ReportViewer from './report-viewer';
 import BuLobSelector from './bu-lob-selector';
 import { Input } from '@/components/ui/input';
@@ -152,7 +152,7 @@ const SettingsDropdown = ({ onGenerateReport, isReportGenerating }: { onGenerate
                     <DialogHeader>
                         <DialogTitle>Agent Activity Monitor</DialogTitle>
                     </DialogHeader>
-                    <AgentMonitorPanel className="flex-1 min-h-0" />
+                    <EnhancedAgentMonitor className="flex-1 min-h-0" />
                 </DialogContent>
             </Dialog>
         </>
