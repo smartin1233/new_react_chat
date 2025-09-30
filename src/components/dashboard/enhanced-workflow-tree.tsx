@@ -598,49 +598,83 @@ export default function EnhancedWorkflowTree({ className }: { className?: string
   }
 
   return (
-    <Card className={cn('flex-col border-r rounded-none hidden md:flex', className)}>
-      <CardHeader className="flex flex-row items-center justify-between gap-2 p-4 border-b">
-        <div className="flex items-center gap-2">
-          <GitBranch className="h-6 w-6" />
-          <div>
-            <CardTitle className="text-lg">Enhanced Workflow</CardTitle>
-            {metrics && (
-              <p className="text-xs text-muted-foreground">
-                {metrics.completedSteps} of {metrics.totalSteps} steps • {Math.round(metrics.overallEfficiency * 100)}% efficiency
-              </p>
-            )}
-          </div>
-        </div>
-        <div className="flex items-center gap-1">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="ghost" size="icon" onClick={showAgentMonitor} className="h-8 w-8">
-                  <Eye className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="bottom">
-                <p>Show Agent Monitor</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-8 w-8">
-                  <Settings className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="bottom">
-                <p>Workflow Settings</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </div>
-      </CardHeader>
-      <CardContent className="p-0 flex-1 overflow-hidden">
-        {renderContent()}
-      </CardContent>
-    </Card>
+    <>
+      {/* Workflow Toggle Button - Fixed position */}
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() => setIsOpen(!isOpen)}
+        className="fixed top-4 left-4 z-50 shadow-lg"
+      >
+        <GitBranch className="h-4 w-4 mr-1" />
+        Workflow
+        {metrics && (
+          <Badge variant="secondary" className="ml-2">
+            {metrics.completedSteps}/{metrics.totalSteps}
+          </Badge>
+        )}
+      </Button>
+
+      {/* Workflow Drawer */}
+      <div
+        className={cn(
+          "fixed inset-y-0 left-0 z-40 w-80 bg-background border-r shadow-xl transform transition-transform duration-300 ease-in-out",
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        )}
+      >
+        <Card className="flex-col rounded-none h-full">
+          <CardHeader className="flex flex-row items-center justify-between gap-2 p-4 border-b">
+            <div className="flex items-center gap-2">
+              <GitBranch className="h-6 w-6" />
+              <div>
+                <CardTitle className="text-lg">Enhanced Workflow</CardTitle>
+                {metrics && (
+                  <p className="text-xs text-muted-foreground">
+                    {metrics.completedSteps} of {metrics.totalSteps} steps • {Math.round(metrics.overallEfficiency * 100)}% efficiency
+                  </p>
+                )}
+              </div>
+            </div>
+            <div className="flex items-center gap-1">
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="icon" onClick={showAgentMonitor} className="h-8 w-8">
+                      <Eye className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">
+                    <p>Show Agent Monitor</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="h-8 w-8">
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">
+                    <p>Close Workflow</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+          </CardHeader>
+          <CardContent className="p-0 flex-1 overflow-hidden">
+            {renderContent()}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Overlay */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-black/20 z-30" 
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+    </>
   );
 }
