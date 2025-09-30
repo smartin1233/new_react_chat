@@ -11,7 +11,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { 
   GitMerge, CheckCircle2, AlertCircle, Clock, GitBranch, 
   Play, Bot, Brain, Zap, TrendingUp, Target, Eye,
-  MoreVertical, Pause, RotateCcw, FastForward, Settings
+  MoreVertical, Pause, RotateCcw, FastForward, Settings, X
 } from 'lucide-react';
 import type { WorkflowStep, WorkflowStatus } from '@/lib/types';
 import { useApp } from './app-provider';
