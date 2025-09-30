@@ -698,8 +698,8 @@ Leverage your expertise to provide deep, meaningful, and statistically sound ins
   getPerformanceMetrics() {
     return {
       ...this.performanceMetrics,
-      cacheStats: openaiClient.getCacheStats(),
-      queueSize: openaiClient.getQueueSize()
+      cacheStats: enhancedAPIClient.getCacheStats(),
+      queueSize: enhancedAPIClient.getQueueSize()
     };
   }
 }
