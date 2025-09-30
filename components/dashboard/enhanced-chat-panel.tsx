@@ -13,7 +13,7 @@ import { Bot, Paperclip, Send, User, BarChart, CheckCircle, FileText, Brain, Tre
 import { useApp } from './app-provider';
 import type { ChatMessage, WeeklyData, WorkflowStep } from '@/lib/types';
 import { cn } from '@/lib/utils';
-import AgentMonitorPanel from './agent-monitor';
+import EnhancedAgentMonitor from './enhanced-agent-monitor';
 import DataVisualizer from './data-visualizer';
 import { openaiClient, validateChatMessage, sanitizeUserInput } from '@/lib/api-client';
 import { statisticalAnalyzer, insightsGenerator, type DataPoint } from '@/lib/statistical-analysis';
