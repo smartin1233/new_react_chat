@@ -1175,6 +1175,21 @@ export default function EnhancedChatPanel({ className }: { className?: string })
   };
 
   const handleSuggestionClick = (suggestion: string) => {
+    // Handle special API setup suggestions
+    if (suggestion === 'Open API Settings') {
+      setShowAPISettings(true);
+      return;
+    }
+    if (suggestion === 'Configure OpenAI Key' || suggestion === 'Configure OpenRouter Key') {
+      setShowAPISettings(true);
+      return;
+    }
+    if (suggestion === 'Test API Connection') {
+      setShowAPISettings(true);
+      return;
+    }
+    
+    // Handle regular suggestions
     submitMessage(suggestion);
   };
   
