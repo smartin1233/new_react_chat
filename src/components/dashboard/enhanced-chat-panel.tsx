@@ -875,6 +875,33 @@ function EnhancedChatBubble({
         
         {/* Enhanced Action Buttons */}
         <div className="mt-3 space-y-2">
+          {/* API Setup Notice */}
+          {(message as any).requiresAPISetup && (
+            <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mt-3">
+              <div className="flex items-start gap-3">
+                <Settings className="h-5 w-5 text-blue-600 mt-0.5" />
+                <div className="flex-1">
+                  <div className="text-sm font-semibold text-blue-800 dark:text-blue-200 mb-2">
+                    🔑 API Configuration Required
+                  </div>
+                  <div className="text-xs text-blue-700 dark:text-blue-300 mb-3">
+                    To use the AI-powered analysis features, please configure at least one API provider:
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      className="bg-blue-600 hover:bg-blue-700 text-white"
+                      onClick={() => onSuggestionClick('Open API Settings')}
+                    >
+                      <Settings className="h-3 w-3 mr-1" />
+                      Configure API Keys
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Suggestions */}
           {message.suggestions && message.suggestions.length > 0 && (
             <div className="bg-muted/20 rounded-lg p-3">
@@ -887,10 +914,14 @@ function EnhancedChatBubble({
                   <Button
                     key={index}
                     size="sm"
-                    variant="outline"
-                    className="text-xs h-7"
+                    variant={suggestion.includes('API') || suggestion.includes('Settings') ? 'default' : 'outline'}
+                    className={cn(
+                      "text-xs h-7",
+                      suggestion.includes('API') || suggestion.includes('Settings') && "bg-blue-600 hover:bg-blue-700 text-white"
+                    )}
                     onClick={() => onSuggestionClick(suggestion)}
                   >
+                    {suggestion.includes('Settings') && <Settings className="h-3 w-3 mr-1" />}
                     {suggestion}
                   </Button>
                 ))}
