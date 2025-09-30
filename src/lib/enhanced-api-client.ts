@@ -261,9 +261,10 @@ export class EnhancedAPIClient {
 
     // Try primary provider first
     try {
+      const selectedModel = model || (this.config.preferredProvider === 'openrouter' ? OPENROUTER_MODEL : this.config.model);
       const result = await this.makeRequest({
         provider: this.config.preferredProvider,
-        model: model || this.config.model,
+        model: selectedModel,
         messages,
         temperature,
         max_tokens
