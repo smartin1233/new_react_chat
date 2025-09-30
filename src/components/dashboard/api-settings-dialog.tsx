@@ -226,8 +226,12 @@ export default function APISettingsDialog({ open, onOpenChange }: APISettingsDia
                   <Alert>
                     <Info className="h-4 w-4" />
                     <AlertDescription>
-                      OpenAI provides high-quality responses but requires a paid API key. 
-                      Get your key from <a href="https://platform.openai.com/api-keys" target="_blank" className="underline">platform.openai.com</a>
+                      <strong>OpenAI Setup:</strong> Provides highest quality responses.<br/>
+                      1. Visit <a href="https://platform.openai.com/api-keys" target="_blank" className="underline font-medium">platform.openai.com/api-keys</a><br/>
+                      2. Create a new API key<br/>
+                      3. Add billing information (pay-per-use)<br/>
+                      4. Copy and paste your key above<br/>
+                      <span className="text-xs text-muted-foreground">Costs ~$0.002 per 1000 words</span>
                     </AlertDescription>
                   </Alert>
                 </CardContent>
