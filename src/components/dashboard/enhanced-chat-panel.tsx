@@ -538,7 +538,25 @@ class EnhancedMultiAgentChatHandler {
         console.error(`${agent.name} Error:`, error);
         this.performanceMetrics.errorCount++;
         
-        finalResponse += `## ${agent.name}\n⚠️ ${error instanceof Error ? error.message : 'An unexpected error occurred'}\n\n`;
+        const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
+        
+        // Check if this is an API key configuration error
+        if (errorMessage.includes('🔑') || errorMessage.includes('API key')) {
+          finalResponse += `## ${agent.name}\n${errorMessage}\n\n**Quick Fix Options:**\n• Click the Settings button below to configure your API keys\n• Both OpenAI and OpenRouter keys are supported\n• The system will automatically use the working provider\n\n`;
+          
+          // Add a suggestion to open settings
+          this.dispatch({ 
+            type: 'ADD_THINKING_STEP', 
+            payload: '⚙️ API configuration required - please check Settings' 
+          });
+        } else {
+          finalResponse += `## ${agent.name}\n⚠️ ${errorMessage}\n\n**Troubleshooting:**\n• Check your internet connection\n• Try again in a moment\n• Contact support if the issue persists\n\n`;
+        }
+        
+        // If all agents are failing due to API issues, break early
+        if (errorMessage.includes('🔑')) {
+          break;
+        }
       }
     }
 
