@@ -1282,6 +1282,11 @@ export default function EnhancedChatPanel({ className }: { className?: string })
           <EnhancedAgentMonitor className="flex-1 min-h-0" />
         </DialogContent>
       </Dialog>
+
+      <APISettingsDialog 
+        open={showAPISettings}
+        onOpenChange={setShowAPISettings}
+      />
     </>
   );
 }
