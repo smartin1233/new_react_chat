@@ -311,7 +311,7 @@ export default function EnhancedWorkflowTree({ className }: { className?: string
   const { state, dispatch } = useApp();
   const { workflow } = state;
   const [isMobile, setIsMobile] = useState(false);
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false); // Hidden by default
   const [metrics, setMetrics] = useState<WorkflowMetrics | null>(null);
   
   // Enhanced workflow steps with additional metadata
