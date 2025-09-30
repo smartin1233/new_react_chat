@@ -153,9 +153,6 @@ export default function BuLobSelector({
                 }
             });
         } else {
-            // End onboarding when data-enabled LOB is selected
-            dispatch({ type: 'END_ONBOARDING' });
-            
             const dataQuality = lob.dataQuality;
             const trend = dataQuality?.trend ? `a ${dataQuality.trend} trend` : "an undetermined trend";
             const seasonality = dataQuality?.seasonality ? ` with ${dataQuality.seasonality.replace(/_/g, ' ')} seasonality` : '';
