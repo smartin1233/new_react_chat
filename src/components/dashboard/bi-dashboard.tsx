@@ -264,17 +264,18 @@ export default function BIDashboard() {
         ))}
       </div>
 
-      {/* Main Charts Row */}
+      {/* Conditional Main Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Forecast Chart */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5" />
-              Forecast Analysis (Past + Future)
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+        {/* Forecast Chart - Only show if forecasting is relevant */}
+        {dashboardConfig.showForecasting && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <TrendingUp className="h-5 w-5" />
+                Forecast Analysis (Past + Future)
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
             <ResponsiveContainer width="100%" height={300}>
               <ComposedChart data={forecastData}>
                 <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
