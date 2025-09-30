@@ -495,7 +495,7 @@ class EnhancedMultiAgentChatHandler {
 
         this.conversationHistory.push({ role: "user", content: sanitizedMessage });
 
-        const completion = await openaiClient.createChatCompletion({
+        const completion = await enhancedAPIClient.createChatCompletion({
           model: "gpt-4o-mini",
           messages: [
             { role: "system", content: systemPrompt },
