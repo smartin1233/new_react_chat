@@ -82,13 +82,42 @@ export default function WelcomeHero() {
 
           {/* Suggested prompts */}
           <div className="mt-4 flex flex-wrap justify-center gap-2">
-            {(state.selectedLob?.suggestions || [
-              "Upload your sales data",
-              "Show me a sample analysis",
-              "What can I do with this app?",
-              "How do I generate a forecast?",
-              "Explore my data"
-            ]).map((s) => (
+            {(() => {
+              if (!state.selectedBu || !state.selectedLob) {
+                return [
+                  "Upload your sales data",
+                  "Show me a sample analysis", 
+                  "What can I do with this app?",
+                  "How do I generate a forecast?",
+                  "Explore my data"
+                ];
+              }
+              
+              // Dynamic prompts based on whether data is available
+              if (state.selectedLob?.hasData) {
+                return [
+                  "Run complete forecasting analysis",
+                  "Explore data patterns and trends",
+                  "Clean and preprocess the data",
+                  "Generate business insights",
+                  "Train forecasting models",
+                  "What are the key performance indicators?",
+                  "Show me data quality assessment",
+                  "Generate forecast for next 30 days"
+                ];
+              } else {
+                return [
+                  "Get started with data onboarding",
+                  "Upload CSV or Excel data file",
+                  "Show me what analysis I can do",
+                  "Help me set up forecasting",
+                  "What data format do you need?",
+                  "Guide me through the process",
+                  "Show sample data analysis",
+                  "How to prepare my data?"
+                ];
+              }
+            })().map((s) => (
               <Button key={s} size="sm" variant="outline" onClick={() => setPrompt((p) => (p ? `${p} ${s}` : s))}>
                 {s}
               </Button>
