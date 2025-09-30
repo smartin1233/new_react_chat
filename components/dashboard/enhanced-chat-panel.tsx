@@ -1266,7 +1266,7 @@ export default function EnhancedChatPanel({ className }: { className?: string })
               Enhanced Agent Intelligence Monitor
             </DialogTitle>
           </DialogHeader>
-          <AgentMonitorPanel className="flex-1 min-h-0" />
+          <EnhancedAgentMonitor className="flex-1 min-h-0" />
         </DialogContent>
       </Dialog>
     </>
