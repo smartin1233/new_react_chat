@@ -551,7 +551,7 @@ class EnhancedMultiAgentChatHandler {
     const responseTime = Date.now() - startTime;
     this.performanceMetrics.avgResponseTime = 
       (this.performanceMetrics.avgResponseTime * (this.performanceMetrics.requestCount - 1) + responseTime) / this.performanceMetrics.requestCount;
-    this.performanceMetrics.cacheHitRate = openaiClient.getCacheStats().hitRate;
+    this.performanceMetrics.cacheHitRate = enhancedAPIClient.getCacheStats().hitRate;
 
     this.dispatch({ type: 'CLEAR_THINKING_STEPS' });
     
