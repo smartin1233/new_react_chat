@@ -55,7 +55,13 @@ type Action =
   | { type: 'END_ONBOARDING' }
   | { type: 'QUEUE_USER_PROMPT'; payload: string }
   | { type: 'CLEAR_QUEUED_PROMPT' }
-  | { type: 'GENERATE_REPORT'; payload: { messageId: string; reportData: any; agentType: string; timestamp: string } };
+  | { type: 'GENERATE_REPORT'; payload: { messageId: string; reportData: any; agentType: string; timestamp: string } }
+  | { type: 'UPDATE_CONVERSATION_CONTEXT'; payload: { 
+      topics?: string[]; 
+      currentPhase?: string; 
+      completedTasks?: string[];
+      userIntent?: string;
+    } };
 
 
 const initialState: AppState = {
