@@ -180,28 +180,43 @@ export default function BIDashboard() {
     return (
       <div className="p-6 text-center">
         <BarChart3 className="mx-auto h-16 w-16 text-muted-foreground/50 mb-4" />
-        <h3 className="text-lg font-semibold mb-2">BI Dashboard</h3>
-        <p className="text-muted-foreground">
-          Select a Business Unit / LOB with data to see comprehensive analytics dashboard.
+        <h3 className="text-lg font-semibold mb-2">{dashboardConfig.title}</h3>
+        <p className="text-muted-foreground mb-4">
+          {dashboardConfig.primaryMessage}
         </p>
+        {dashboardConfig.subtitle && (
+          <p className="text-sm text-muted-foreground">
+            {dashboardConfig.subtitle}
+          </p>
+        )}
       </div>
     );
   }
 
   return (
     <div className="space-y-6 p-6">
-      {/* Header */}
+      {/* Dynamic Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold">BI Dashboard</h2>
+          <h2 className="text-2xl font-bold">{dashboardConfig.title}</h2>
           <p className="text-muted-foreground">
-            {state.selectedBu?.name} - {state.selectedLob?.name} Analytics
+            {dashboardConfig.subtitle || `${state.selectedBu?.name} - ${state.selectedLob?.name} Analytics`}
+          </p>
+          <p className="text-sm text-blue-600 mt-1">
+            {dashboardConfig.primaryMessage}
           </p>
         </div>
-        <Badge variant="outline" className="flex items-center gap-1">
-          <Activity className="h-3 w-3" />
-          Live Data
-        </Badge>
+        <div className="text-right">
+          <Badge variant="outline" className="flex items-center gap-1 mb-2">
+            <Activity className="h-3 w-3" />
+            {state.conversationContext?.currentPhase?.charAt(0).toUpperCase() + state.conversationContext?.currentPhase?.slice(1) || 'Analysis'}
+          </Badge>
+          {state.conversationContext?.topics && state.conversationContext.topics.length > 0 && (
+            <div className="text-xs text-muted-foreground">
+              Focus: {state.conversationContext.topics.map(t => t.replace(/_/g, ' ')).join(', ')}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* KPIs Grid */}
