@@ -237,39 +237,18 @@ export class DynamicInsightsAnalyzer {
       });
     }
 
-    // Business Insights Phase
-    if (topics.includes('business_insights') || currentPhase === 'insights') {
-      config = {
-        ...config,
-        title: 'Strategic Insights Dashboard',
-        subtitle: 'Actionable business intelligence and recommendations',
-        showBusinessMetrics: true,
-        showForecasting: topics.includes('forecasting'),
-        kpisToShow: ['current_value', 'total_revenue', 'growth_rate', 'efficiency'],
-        primaryMessage: 'Transforming your data into strategic business insights and action plans',
-        relevantInsights: [
-          {
-            id: 'business-opportunity-2',
-            title: 'Revenue Optimization Opportunity',
-            description: 'Analysis suggests 18% revenue increase potential through efficiency improvements',
-            type: 'business_opportunity',
-            priority: 'high',
-            relevantToPhase: ['insights'],
-            businessValue: 'Revenue optimization directly impacts bottom-line profitability',
-            nextAction: 'Implement efficiency optimization initiatives'
-          },
-          {
-            id: 'risk-1',
-            title: 'Market Volatility Monitoring',
-            description: 'External factors may impact forecast accuracy - recommend scenario planning',
-            type: 'risk',
-            priority: 'medium',
-            relevantToPhase: ['insights', 'forecasting'],
-            businessValue: 'Proactive risk management protects against market uncertainties',
-            nextAction: 'Develop contingency plans for different market scenarios'
-          }
-        ]
-      };
+    // Business Insights Phase - only show if user asked for business insights/strategy
+    if (userAskedAbout.businessInsights) {
+      config.relevantInsights.push({
+        id: 'business-insights-1',
+        title: 'Business Insights Available',
+        description: 'Strategic recommendations based on your data analysis',
+        type: 'business_opportunity',
+        priority: 'high',
+        relevantToPhase: ['insights'],
+        businessValue: 'Data-driven insights help improve business performance and growth',
+        nextAction: 'Review insights to identify opportunities for your business'
+      });
     }
 
     // Complete workflow
