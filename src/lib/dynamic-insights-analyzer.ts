@@ -209,29 +209,18 @@ export class DynamicInsightsAnalyzer {
       }
     }
 
-    // Modeling Phase
-    if (topics.includes('modeling') || currentPhase === 'modeling') {
-      config = {
-        ...config,
-        title: 'Model Development Dashboard',
-        subtitle: 'Training and validating predictive models',
-        showModelMetrics: true,
-        showDataQuality: true,
-        kpisToShow: ['current_value', 'efficiency', 'data_quality'],
-        primaryMessage: 'Building and optimizing machine learning models for your business data',
-        relevantInsights: [
-          {
-            id: 'model-performance-1',
-            title: 'Model Training Complete',
-            description: 'Enhanced ensemble model achieved 91% accuracy with excellent validation scores',
-            type: 'model_performance',
-            priority: 'high',
-            relevantToPhase: ['modeling', 'forecasting'],
-            businessValue: 'High-accuracy models provide reliable predictions for business decisions',
-            nextAction: 'Deploy model for forecasting and monitoring'
-          }
-        ]
-      };
+    // Modeling Phase - only show if user asked about models/algorithms
+    if (userAskedAbout.modeling) {
+      config.relevantInsights.push({
+        id: 'model-development-1',
+        title: 'Model Development in Progress',
+        description: 'Building predictive models based on your requirements',
+        type: 'model_performance',
+        priority: 'high',
+        relevantToPhase: ['modeling'],
+        businessValue: 'Custom models will provide predictions tailored to your business patterns',
+        nextAction: 'Model results will be available once training completes'
+      });
     }
 
     // Forecasting Phase
