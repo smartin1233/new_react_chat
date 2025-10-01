@@ -19,6 +19,7 @@ import { enhancedAPIClient, validateChatMessage, sanitizeUserInput } from '@/lib
 import { statisticalAnalyzer, insightsGenerator, type DataPoint } from '@/lib/statistical-analysis';
 import { dynamicInsightsAnalyzer } from '@/lib/dynamic-insights-analyzer';
 import { followUpQuestionsService, type FollowUpQuestion, type AnalysisRequirements, type UserResponse } from '@/lib/follow-up-questions';
+import FollowUpQuestionsDialog from './follow-up-questions-dialog';
 import APISettingsDialog from './api-settings-dialog';
 
 type AgentConfig = {
