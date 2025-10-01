@@ -20,6 +20,7 @@ import ReportViewer from './report-viewer';
 import BuLobSelector from './bu-lob-selector';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import APISettingsDialog from './api-settings-dialog';
 
 const ThemeToggle = () => {
     const [theme, setTheme] = React.useState('light');
@@ -53,8 +54,7 @@ const ThemeToggle = () => {
 
 const SettingsDropdown = ({ onGenerateReport, isReportGenerating }: { onGenerateReport: () => void, isReportGenerating: boolean }) => {
     const { state, dispatch } = useApp();
-    const [isSettingsDialogOpen, setIsSettingsDialogOpen] = useState(false);
-    const [apiKey, setApiKey] = useState('');
+    const [showAPISettings, setShowAPISettings] = useState(false);
 
     const showAgentMonitor = () => {
         dispatch({ type: 'SET_AGENT_MONITOR_OPEN', payload: true });
@@ -64,29 +64,7 @@ const SettingsDropdown = ({ onGenerateReport, isReportGenerating }: { onGenerate
         window.print();
     };
 
-    const handleSaveApiKey = async () => {
-        try {
-            const response = await fetch('/api/save-api-key', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ apiKey }),
-            });
-
-            if (response.ok) {
-                console.log('API Key saved successfully');
-                // You might want to show a toast notification here
-            } else {
-                console.error('Failed to save API key');
-                // You might want to show an error message here
-            }
-        } catch (error) {
-            console.error('Error saving API key:', error);
-        } finally {
-            setIsSettingsDialogOpen(false);
-        }
-    };
+    // API key management handled in APISettingsDialog
 
     return (
         <>
@@ -99,9 +77,9 @@ const SettingsDropdown = ({ onGenerateReport, isReportGenerating }: { onGenerate
                 <DropdownMenuContent className="w-64" align="end">
                     <DropdownMenuLabel>System Settings</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onSelect={() => setIsSettingsDialogOpen(true)}>
+                    <DropdownMenuItem onSelect={() => setShowAPISettings(true)}>
                         <Key className="mr-2 h-4 w-4" />
-                        <span>Edit API Key</span>
+                        <span>API Settings</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem onSelect={showAgentMonitor}>
                         <BarChart className="mr-2 h-4 w-4" />
@@ -123,30 +101,7 @@ const SettingsDropdown = ({ onGenerateReport, isReportGenerating }: { onGenerate
                     </div>
                 </DropdownMenuContent>
             </DropdownMenu>
-            <Dialog open={isSettingsDialogOpen} onOpenChange={setIsSettingsDialogOpen}>
-                <DialogContent className="sm:max-w-[425px]">
-                    <DialogHeader>
-                        <DialogTitle>Edit API Key</DialogTitle>
-                    </DialogHeader>
-                    <div className="grid gap-4 py-4">
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="api-key" className="text-right">
-                                API Key
-                            </Label>
-                            <Input
-                                id="api-key"
-                                value={apiKey}
-                                onChange={(e) => setApiKey(e.target.value)}
-                                className="col-span-3"
-                                placeholder="Enter your OpenAI API Key"
-                            />
-                        </div>
-                    </div>
-                    <DialogFooter>
-                        <Button type="submit" onClick={handleSaveApiKey}>Save changes</Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
+            <APISettingsDialog open={showAPISettings} onOpenChange={setShowAPISettings} />
             <Dialog open={state.agentMonitor.isOpen} onOpenChange={(isOpen) => dispatch({ type: 'SET_AGENT_MONITOR_OPEN', payload: isOpen })}>
                 <DialogContent className="max-w-4xl h-[80vh] flex flex-col">
                     <DialogHeader>
