@@ -11,16 +11,15 @@ interface APIConfig {
   preferredProvider: 'openai' | 'openrouter';
   model: string;
 }
-
-// Default configuration
+// Default configuration - Using OpenRouter as primary since it's working
 const DEFAULT_CONFIG: APIConfig = {
   openaiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY || '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',
-  openrouterKey: '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',
-  preferredProvider: 'openai',
+  openrouterKey: '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',
+  preferredProvider: 'openrouter', // Switch to working provider
   model: 'gpt-4o-mini'
 };
 
-const OPENROUTER_MODEL = 'openai/gpt-oss-20b:free';
+const OPENROUTER_MODEL = 'meta-llama/llama-4-maverick-17b-128e-instruct:free';
 const OPENROUTER_BASE_URL = 'https://openrouter.ai/api/v1';
 
 // Cache implementation
