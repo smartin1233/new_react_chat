@@ -1530,6 +1530,14 @@ Please answer the following questions to customize the analysis to your needs:`,
         open={showAPISettings}
         onOpenChange={setShowAPISettings}
       />
+
+      <FollowUpQuestionsDialog
+        open={showFollowUpQuestions}
+        onOpenChange={setShowFollowUpQuestions}
+        requirements={followUpRequirements}
+        onSubmit={handleFollowUpSubmit}
+        onSkip={handleFollowUpSkip}
+      />
     </>
   );
 }
