@@ -9,7 +9,8 @@ interface APIConfig {
   openaiKey: string;
   openrouterKey: string;
   preferredProvider: 'openai' | 'openrouter';
-  model: string;
+  model: string; // OpenAI model
+  openrouterModel: string; // OpenRouter model
 }
 
 // Default configuration - Using OpenRouter as primary since it's working
@@ -17,12 +18,13 @@ const DEFAULT_CONFIG: APIConfig = {
   openaiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY || '',
   openrouterKey: '',
   preferredProvider: 'openrouter',
-  model: 'gpt-4o-mini'
+  model: 'gpt-4o-mini',
+  openrouterModel: 'meta-llama/llama-4-maverick:free'
 };
 
 
 
-const OPENROUTER_MODEL = 'meta-llama/llama-4-maverick-17b-128e-instruct:free';
+// OpenRouter model is configurable via this.config.openrouterModel
 const OPENROUTER_BASE_URL = 'https://openrouter.ai/api/v1';
 
 
@@ -201,7 +203,7 @@ export class EnhancedAPIClient {
         dangerouslyAllowBrowser: true,
       });
 
-      const testModel = provider === 'openrouter' ? OPENROUTER_MODEL : 'gpt-4o-mini';
+      const testModel = provider === 'openrouter' ? this.config.openrouterModel : 'gpt-4o-mini';
 
       const response = await testClient.chat.completions.create({
         model: testModel,
@@ -264,7 +266,7 @@ export class EnhancedAPIClient {
 
     // Try primary provider first
     try {
-      const selectedModel = model || (this.config.preferredProvider === 'openrouter' ? OPENROUTER_MODEL : this.config.model);
+      const selectedModel = model || (this.config.preferredProvider === 'openrouter' ? this.config.openrouterModel : this.config.model);
       const result = await this.makeRequest({
         provider: this.config.preferredProvider,
         model: selectedModel,
@@ -284,7 +286,7 @@ export class EnhancedAPIClient {
       // Try fallback provider if enabled
       if (retryWithFallback) {
         const fallbackProvider = this.config.preferredProvider === 'openai' ? 'openrouter' : 'openai';
-        const fallbackModel = fallbackProvider === 'openrouter' ? OPENROUTER_MODEL : 'gpt-4o-mini';
+        const fallbackModel = fallbackProvider === 'openrouter' ? this.config.openrouterModel : 'gpt-4o-mini';
 
         try {
           console.log(`Falling back to ${fallbackProvider}...`);
