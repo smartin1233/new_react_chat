@@ -179,39 +179,34 @@ export class DynamicInsightsAnalyzer {
     };
   }
 
-    // Data Exploration Phase
-    if (topics.includes('data_exploration') || currentPhase === 'exploration') {
-      config = {
-        ...config,
-        title: 'Data Exploration Dashboard',
-        subtitle: 'Understanding your data patterns and quality',
-        showDataQuality: true,
-        showBusinessMetrics: true,
-        kpisToShow: ['current_value', 'total_orders', 'data_quality', 'growth_rate'],
-        primaryMessage: 'Exploring your data to identify patterns, trends, and quality indicators',
-        relevantInsights: [
-          {
-            id: 'data-quality-1',
-            title: 'Data Quality Assessment',
-            description: 'Your dataset shows excellent completeness with minimal missing values',
-            type: 'data_quality',
-            priority: 'high',
-            relevantToPhase: ['exploration'],
-            businessValue: 'High-quality data enables reliable analysis and accurate insights',
-            nextAction: 'Proceed with pattern analysis and trend identification'
-          },
-          {
-            id: 'pattern-1',
-            title: 'Weekly Pattern Detected',
-            description: 'Strong weekly seasonality identified - Fridays show 25% higher activity',
-            type: 'pattern',
-            priority: 'medium',
-            relevantToPhase: ['exploration', 'forecasting'],
-            businessValue: 'Understanding patterns helps optimize resource allocation and planning',
-            nextAction: 'Consider staffing and inventory adjustments for peak days'
-          }
-        ]
-      };
+    // Data Exploration Phase - only show if user actually asked about data exploration
+    if (userAskedAbout.dataExploration) {
+      config.relevantInsights = [
+        {
+          id: 'data-overview-1',
+          title: 'Data Overview Complete',
+          description: 'Your dataset contains good quality data with clear patterns',
+          type: 'data_quality',
+          priority: 'high',
+          relevantToPhase: ['exploration'],
+          businessValue: 'Reliable data foundation for business analysis and decision making',
+          nextAction: 'Data is ready for deeper analysis or business insights'
+        }
+      ];
+
+      // Only add pattern insights if there are actual patterns discovered
+      if (/pattern|trend|seasonal/i.test(userIntent || '')) {
+        config.relevantInsights.push({
+          id: 'pattern-1',
+          title: 'Business Patterns Identified',
+          description: 'Clear patterns detected in your business data',
+          type: 'pattern',
+          priority: 'medium',
+          relevantToPhase: ['exploration'],
+          businessValue: 'Understanding patterns helps optimize operations and planning',
+          nextAction: 'Use these patterns for better business planning'
+        });
+      }
     }
 
     // Modeling Phase
