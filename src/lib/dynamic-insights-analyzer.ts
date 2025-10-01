@@ -94,31 +94,90 @@ export class DynamicInsightsAnalyzer {
 
   /**
    * Generate dynamic dashboard configuration based on conversation context
+   * ONLY show information relevant to what user has actually asked about
    */
   generateDynamicDashboard(context: ConversationContext, hasData: boolean): DynamicDashboardConfig {
     const { topics, currentPhase, userIntent } = context;
 
+    // Default config shows minimal information
     let config: DynamicDashboardConfig = {
       title: 'Business Intelligence Dashboard',
-      subtitle: 'Contextual insights based on your analysis',
+      subtitle: 'Information based on your current analysis',
       relevantInsights: [],
-      showForecasting: false,
-      showModelMetrics: false,
-      showDataQuality: false,
-      showBusinessMetrics: true,
-      kpisToShow: ['current_value', 'total_revenue'],
-      primaryMessage: 'Select analysis type to see relevant insights'
+      showForecasting: false,      // Only show if user asked for forecasting
+      showModelMetrics: false,     // Only show if user asked about models
+      showDataQuality: false,      // Only show if user asked about data quality
+      showBusinessMetrics: false,  // Only show if user explored business metrics
+      kpisToShow: [],              // Start empty, add based on actual requests
+      primaryMessage: 'Ask questions to see relevant insights appear here'
     };
 
     if (!hasData) {
       return {
         ...config,
-        title: 'Getting Started',
-        subtitle: 'Upload your data to begin analysis',
-        primaryMessage: 'Upload your CSV or Excel file to start exploring business insights',
+        title: 'Welcome to Your BI Assistant',
+        subtitle: 'Upload your data to begin',
+        primaryMessage: 'Upload your CSV or Excel file to start exploring your business data',
         kpisToShow: []
       };
     }
+
+    // Only show elements if user has explicitly asked about them
+    const userAskedAbout = this.determineUserRequests(context);
+    
+    if (userAskedAbout.dataExploration) {
+      config.showDataQuality = true;
+      config.showBusinessMetrics = true;
+      config.kpisToShow = ['current_value', 'data_quality', 'total_orders'];
+      config.title = 'Data Exploration Dashboard';
+      config.subtitle = 'Understanding your data patterns and quality';
+    }
+
+    if (userAskedAbout.forecasting) {
+      config.showForecasting = true;
+      config.showModelMetrics = true;
+      config.kpisToShow = [...config.kpisToShow, 'growth_rate', 'efficiency'];
+      config.title = 'Forecasting Dashboard';
+      config.subtitle = 'Future predictions and planning insights';
+    }
+
+    if (userAskedAbout.businessInsights) {
+      config.showBusinessMetrics = true;
+      config.kpisToShow = [...config.kpisToShow, 'total_revenue', 'growth_rate'];
+      if (config.title === 'Business Intelligence Dashboard') {
+        config.title = 'Business Insights Dashboard';
+        config.subtitle = 'Strategic insights from your data';
+      }
+    }
+
+    // Remove duplicates from KPIs
+    config.kpisToShow = [...new Set(config.kpisToShow)];
+    
+    return config;
+  }
+
+  /**
+   * Determine what the user has actually asked about based on conversation
+   */
+  private determineUserRequests(context: ConversationContext): {
+    dataExploration: boolean;
+    forecasting: boolean;
+    businessInsights: boolean;
+    modeling: boolean;
+  } {
+    const { topics, userIntent } = context;
+    
+    return {
+      dataExploration: topics.includes('data_exploration') || 
+                      /explore|eda|quality|pattern|distribution/i.test(userIntent || ''),
+      forecasting: topics.includes('forecasting') || 
+                  /forecast|predict|future|projection/i.test(userIntent || ''),
+      businessInsights: topics.includes('business_insights') || 
+                       /insight|business|strategy|recommendation/i.test(userIntent || ''),
+      modeling: topics.includes('modeling') || 
+               /model|train|algorithm|machine learning/i.test(userIntent || '')
+    };
+  }
 
     // Data Exploration Phase
     if (topics.includes('data_exploration') || currentPhase === 'exploration') {
