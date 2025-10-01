@@ -27,23 +27,42 @@ export class FollowUpQuestionsService {
 
   /**
    * Analyze user message and determine if follow-up questions are needed
+   * Only triggers for requests that have meaningful customization options
    */
   needsFollowUpQuestions(message: string, context?: any): boolean {
     const lowerMessage = message.toLowerCase();
     
-    // Keywords that trigger follow-up questions
-    const triggerKeywords = [
-      // Forecasting related
-      'forecast', 'predict', 'prediction', 'future', 'project', 'trend',
-      // Modeling related
-      'model', 'train', 'algorithm', 'machine learning', 'ml',
-      // Analysis related
-      'analyze', 'analysis', 'explore', 'insights', 'pattern',
-      // Complete workflows
-      'complete', 'comprehensive', 'full', 'end-to-end'
+    // Only trigger for specific scenarios with customization options
+    const customizableScenarios = [
+      // Forecasting with specific parameters
+      /(forecast|predict|prediction).*?(days?|weeks?|months?|period|horizon)/i,
+      /(forecast|predict|prediction).*?(model|algorithm|approach|method)/i,
+      
+      // Model training with algorithm choices
+      /(train|build|create).*?(model|algorithm)/i,
+      /(model|algorithm).*?(train|build|create|select|choose)/i,
+      
+      // Complete analysis workflows
+      /(complete|comprehensive|full|end.to.end).*?(analysis|workflow|forecast)/i,
+      /(run|perform|execute).*?(complete|comprehensive|full)/i,
+      
+      // Business insights with specific objectives
+      /(business|strategic).*?(insight|recommendation|analysis)/i,
+      /(insight|recommendation).*?(business|strategic)/i
     ];
 
-    return triggerKeywords.some(keyword => lowerMessage.includes(keyword));
+    // Check if any customizable scenario matches
+    const hasCustomizableScenario = customizableScenarios.some(pattern => pattern.test(message));
+    
+    // Additional checks for complexity that warrants customization
+    const hasComplexityIndicators = [
+      'model', 'algorithm', 'approach', 'method', 'strategy',
+      'days', 'weeks', 'months', 'period', 'horizon',
+      'confidence', 'accuracy', 'performance',
+      'business', 'strategic', 'planning'
+    ].some(keyword => lowerMessage.includes(keyword));
+
+    return hasCustomizableScenario && hasComplexityIndicators;
   }
 
   /**
