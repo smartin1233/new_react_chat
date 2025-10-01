@@ -1081,9 +1081,51 @@ export default function EnhancedChatPanel({ className }: { className?: string })
     }
   };
 
-  // Enhanced submit message handler
+  // Enhanced submit message handler with follow-up questions
   const submitMessage = async (messageText: string) => {
     if (!messageText.trim()) return;
+    
+    // Check if follow-up questions are needed
+    if (followUpQuestionsService.needsFollowUpQuestions(messageText, state)) {
+      const requirements = followUpQuestionsService.generateFollowUpQuestions(messageText, state);
+      
+      if (requirements) {
+        // Show follow-up questions instead of proceeding directly
+        setFollowUpRequirements(requirements);
+        setPendingUserMessage(messageText);
+        setShowFollowUpQuestions(true);
+        
+        // Add user message showing they requested analysis
+        dispatch({ 
+          type: 'ADD_MESSAGE', 
+          payload: {
+            id: crypto.randomUUID(),
+            role: 'user',
+            content: messageText,
+          }
+        });
+
+        // Add assistant response explaining follow-up questions
+        dispatch({ 
+          type: 'ADD_MESSAGE', 
+          payload: {
+            id: crypto.randomUUID(),
+            role: 'assistant',
+            content: `I'd like to understand your requirements better to provide the most accurate ${requirements.analysisType.replace('_', ' ')} analysis.
+
+**Analysis Type:** ${requirements.analysisType.replace('_', ' ').charAt(0).toUpperCase() + requirements.analysisType.replace('_', ' ').slice(1)}
+**Estimated Time:** ${requirements.estimatedTime}
+**Priority:** ${requirements.priority}
+
+Please answer the following questions to customize the analysis to your needs:`,
+            agentType: 'onboarding',
+            suggestions: ['Answer the questions above', 'Skip questions and use defaults', 'Cancel analysis']
+          }
+        });
+        
+        return;
+      }
+    }
     
     dispatch({ type: 'SET_PROCESSING', payload: true });
     dispatch({ type: 'CLEAR_THINKING_STEPS' });
