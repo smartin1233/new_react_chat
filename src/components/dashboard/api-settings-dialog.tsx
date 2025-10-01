@@ -149,7 +149,7 @@ export default function APISettingsDialog({ open, onOpenChange }: APISettingsDia
                   <div className="flex items-center gap-2">
                     {getStatusIcon('openai')}
                     <Badge variant={healthStatus?.openai?.available ? 'default' : 'destructive'}>
-                      {healthStatus?.openai?.available ? 'Active' : 'Offline'}
+                      {healthStatus?.openai?.available ? 'Online' : 'Offline'}
                     </Badge>
                   </div>
                 </div>
@@ -162,7 +162,7 @@ export default function APISettingsDialog({ open, onOpenChange }: APISettingsDia
                   <div className="flex items-center gap-2">
                     {getStatusIcon('openrouter')}
                     <Badge variant={healthStatus?.openrouter?.available ? 'default' : 'destructive'}>
-                      {healthStatus?.openrouter?.available ? 'Active' : 'Offline'}
+                      {healthStatus?.openrouter?.available ? 'Online' : 'Offline'}
                     </Badge>
                   </div>
                 </div>
@@ -339,16 +339,29 @@ export default function APISettingsDialog({ open, onOpenChange }: APISettingsDia
 
                   <div className="space-y-2">
                     <Label htmlFor="model">Model Selection</Label>
-                    <select
-                      id="model"
-                      className="w-full p-2 border border-input rounded-md"
-                      value={config.model}
-                      onChange={(e) => setConfig(prev => ({ ...prev, model: e.target.value }))}
-                    >
-                      <option value="gpt-4o-mini">GPT-4o Mini (Fast & Efficient)</option>
-                      <option value="gpt-4o">GPT-4o (Premium Quality)</option>
-                      <option value="gpt-3.5-turbo">GPT-3.5 Turbo (Cost Effective)</option>
-                    </select>
+                    {config.preferredProvider === 'openai' ? (
+                      <select
+                        id="model"
+                        className="w-full p-2 border border-input rounded-md"
+                        value={config.model}
+                        onChange={(e) => setConfig(prev => ({ ...prev, model: e.target.value }))}
+                      >
+                        <option value="gpt-4o-mini">GPT-4o Mini (Fast & Efficient)</option>
+                        <option value="gpt-4o">GPT-4o (Premium Quality)</option>
+                        <option value="gpt-3.5-turbo">GPT-3.5 Turbo (Cost Effective)</option>
+                      </select>
+                    ) : (
+                      <select
+                        id="openrouter-model"
+                        className="w-full p-2 border border-input rounded-md"
+                        value={(config as any).openrouterModel || 'meta-llama/llama-4-maverick:free'}
+                        onChange={(e) => setConfig(prev => ({ ...prev, openrouterModel: e.target.value }))}
+                      >
+                        <option value="deepseek/deepseek-chat-v3.1:free">deepseek/deepseek-chat-v3.1:free</option>
+                        <option value="meta-llama/llama-4-maverick:free">meta-llama/llama-4-maverick:free</option>
+                        <option value="x-ai/grok-4-fast:free">x-ai/grok-4-fast:free</option>
+                      </select>
+                    )}
                   </div>
                 </CardContent>
               </Card>

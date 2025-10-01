@@ -118,21 +118,30 @@ export default function EnhancedDataPanel({ className }: { className?: string })
       const trendAnalysis = statisticalAnalyzer.analyzeTrend(dataPoints);
       const seasonalityAnalysis = statisticalAnalyzer.analyzeSeasonality(dataPoints);
       const qualityReport = insightsGenerator.generateDataQualityReport(dataPoints);
-      const businessInsights = insightsGenerator.generateForecastInsights(dataPoints, {});
+
+      // Respect user intent: only generate business/forecast insights if requested
+      const topics = state.conversationContext?.topics || [];
+      const intent = state.conversationContext?.userIntent || '';
+      const userAskedForecasting = topics.includes('forecasting') || /forecast|predict|future|projection/i.test(intent);
+      const userAskedBusinessInsights = topics.includes('business_insights') || /insight|strategy|recommendation|opportunity/i.test(intent);
+
+      const businessInsights = (userAskedForecasting || userAskedBusinessInsights)
+        ? insightsGenerator.generateForecastInsights(dataPoints, {})
+        : null;
 
       const results = {
         statistical: statisticalSummary,
         trend: trendAnalysis,
         seasonality: seasonalityAnalysis,
         quality: qualityReport,
-        business: businessInsights
+        business: businessInsights || undefined
       };
 
       setAnalyticsResults(results);
-      
+
       // Generate insight cards
       const cards: InsightCard[] = [];
-      
+
       // Data quality insights
       if (qualityReport.score < 80) {
         cards.push({
@@ -179,27 +188,29 @@ export default function EnhancedDataPanel({ className }: { className?: string })
         });
       }
 
-      // Business insights
-      if (businessInsights.opportunities.length > 0) {
-        cards.push({
-          id: 'business-opportunity',
-          title: 'Business Opportunity',
-          description: businessInsights.opportunities[0],
-          severity: 'success',
-          actionable: true,
-          recommendation: businessInsights.actionableRecommendations[0]
-        });
-      }
+      // Business insights (only if requested)
+      if (businessInsights) {
+        if (businessInsights.opportunities.length > 0) {
+          cards.push({
+            id: 'business-opportunity',
+            title: 'Business Opportunity',
+            description: businessInsights.opportunities[0],
+            severity: 'success',
+            actionable: true,
+            recommendation: businessInsights.actionableRecommendations[0]
+          });
+        }
 
-      if (businessInsights.riskFactors.length > 0) {
-        cards.push({
-          id: 'business-risk',
-          title: 'Risk Factor Identified',
-          description: businessInsights.riskFactors[0],
-          severity: 'warning',
-          actionable: true,
-          recommendation: businessInsights.actionableRecommendations[1] || 'Monitor closely and develop mitigation strategies'
-        });
+        if (businessInsights.riskFactors.length > 0) {
+          cards.push({
+            id: 'business-risk',
+            title: 'Risk Factor Identified',
+            description: businessInsights.riskFactors[0],
+            severity: 'warning',
+            actionable: true,
+            recommendation: businessInsights.actionableRecommendations[1] || 'Monitor closely and develop mitigation strategies'
+          });
+        }
       }
 
       setInsightCards(cards);
