@@ -150,10 +150,7 @@ export class DynamicInsightsAnalyzer {
       }
     }
 
-    // Only show elements if user has explicitly asked about them
-    const userAskedAbout = this.determineUserRequests(context);
-    
-    // Data Exploration Phase - only show if user actually asked about data exploration
+    // Generate insights based on what user has asked about
     if (userAskedAbout.dataExploration) {
       config.relevantInsights = [
         {
