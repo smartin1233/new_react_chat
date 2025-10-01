@@ -243,7 +243,34 @@ export class DynamicInsightsAnalyzer {
       });
     }
 
+    // Remove duplicates from KPIs
+    config.kpisToShow = [...new Set(config.kpisToShow)];
+    
     return config;
+  }
+
+  /**
+   * Determine what the user has actually asked about based on conversation
+   */
+  private determineUserRequests(context: ConversationContext): {
+    dataExploration: boolean;
+    forecasting: boolean;
+    businessInsights: boolean;
+    modeling: boolean;
+  } {
+    const { topics, userIntent } = context;
+    
+    return {
+      dataExploration: topics.includes('data_exploration') || 
+                      /explore|eda|quality|pattern|distribution/i.test(userIntent || ''),
+      forecasting: topics.includes('forecasting') || 
+                  /forecast|predict|future|projection/i.test(userIntent || ''),
+      businessInsights: topics.includes('business_insights') || 
+                       /insight|business|strategy|recommendation/i.test(userIntent || ''),
+      modeling: topics.includes('modeling') || 
+               /model|train|algorithm|machine learning/i.test(userIntent || '')
+    };
+  }
   }
 
   /**
