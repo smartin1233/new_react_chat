@@ -95,29 +95,29 @@ export class FollowUpQuestionsService {
   private detectAnalysisType(message: string): string | null {
     const lowerMessage = message.toLowerCase();
 
-    // Forecasting detection
-    if (/(forecast|predict|future|projection|trend|days?|weeks?|months?)/i.test(message)) {
+    // Forecasting detection - only for specific forecasting requests with parameters
+    if (/(forecast|predict).*?(days?|weeks?|months?|period|horizon|model|algorithm)/i.test(message)) {
       return 'forecasting';
     }
 
-    // Complete analysis detection
-    if (/(complete|full|comprehensive|end.to.end|everything|all)/i.test(message)) {
+    // Complete analysis detection - only for comprehensive workflows
+    if (/(complete|comprehensive|full|end.to.end).*?(analysis|workflow|forecast)/i.test(message)) {
       return 'complete_analysis';
     }
 
-    // Data exploration detection
-    if (/(explore|eda|pattern|distribution|analyze data|data quality|statistics)/i.test(message)) {
-      return 'data_exploration';
-    }
-
-    // Modeling detection
-    if (/(model|train|algorithm|machine learning|ml|accuracy)/i.test(message)) {
+    // Modeling detection - only when specifically asking about models/algorithms
+    if (/(train|build|create).*?(model|algorithm)|model.*?(train|build|selection|choose)/i.test(message)) {
       return 'modeling';
     }
 
-    // Business insights detection
-    if (/(insight|business|recommendation|strategy|opportunity|growth)/i.test(message)) {
+    // Business insights detection - only for strategic business requests
+    if (/(business|strategic).*?(insight|recommendation|analysis)/i.test(message)) {
       return 'business_insights';
+    }
+
+    // Data exploration - only if asking for specific exploration approaches
+    if (/(explore|eda).*?(approach|method|focus|type)/i.test(message)) {
+      return 'data_exploration';
     }
 
     return null;
