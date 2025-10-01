@@ -1289,6 +1289,203 @@ Please answer the following questions to customize the analysis to your needs:`,
     submitMessage(userInput);
   };
 
+  const handleFollowUpSubmit = async (responses: UserResponse[]) => {
+    if (!followUpRequirements || !pendingUserMessage) return;
+    
+    // Generate enhanced prompt with follow-up responses
+    const enhancedPrompt = followUpQuestionsService.generateAnalysisPrompt(
+      followUpRequirements.analysisType,
+      responses,
+      pendingUserMessage
+    );
+    
+    // Close dialog and proceed with analysis
+    setShowFollowUpQuestions(false);
+    setFollowUpRequirements(null);
+    
+    // Add response summary to chat
+    const responseCount = responses.length;
+    dispatch({ 
+      type: 'ADD_MESSAGE', 
+      payload: {
+        id: crypto.randomUUID(),
+        role: 'assistant',
+        content: `✅ Thank you! I've received your ${responseCount} response${responseCount !== 1 ? 's' : ''}. Now proceeding with your customized **${followUpRequirements.analysisType.replace('_', ' ')}** analysis...`,
+        agentType: 'onboarding'
+      }
+    });
+    
+    // Clear state and proceed with enhanced analysis
+    setPendingUserMessage('');
+    await continueWithAnalysis(enhancedPrompt);
+  };
+
+  const handleFollowUpSkip = async () => {
+    if (!pendingUserMessage) return;
+    
+    setShowFollowUpQuestions(false);
+    setFollowUpRequirements(null);
+    
+    // Add skip message to chat
+    dispatch({ 
+      type: 'ADD_MESSAGE', 
+      payload: {
+        id: crypto.randomUUID(),
+        role: 'assistant',
+        content: `Proceeding with default analysis settings for your **${followUpRequirements?.analysisType.replace('_', ' ')}** request...`,
+        agentType: 'onboarding'
+      }
+    });
+    
+    // Continue with original message
+    await continueWithAnalysis(pendingUserMessage);
+    setPendingUserMessage('');
+  };
+
+  const continueWithAnalysis = async (messageText: string) => {
+    dispatch({ type: 'SET_PROCESSING', payload: true });
+    dispatch({ type: 'CLEAR_THINKING_STEPS' });
+
+    // Add enhanced typing indicator
+    dispatch({ 
+      type: 'ADD_MESSAGE', 
+      payload: {
+        id: crypto.randomUUID(),
+        role: 'assistant',
+        content: '',
+        isTyping: true,
+      }
+    });
+
+    try {
+      const result = await enhancedChatHandler!.generateEnhancedResponse(messageText, {
+        selectedBu: state.selectedBu,
+        selectedLob: state.selectedLob,
+        businessUnits: state.businessUnits,
+        userPrompt: messageText,
+        conversationHistory: state.messages.slice(-5),
+        conversationContext: state.conversationContext // Include conversation context
+      });
+
+      const { response: responseText, agentType, reportData, performance: perfMetrics, multiAgent } = result;
+      setPerformance(perfMetrics);
+
+      dispatch({ type: 'SET_PROCESSING', payload: false });
+
+      // Enhanced suggestion parsing
+      const suggestionMatch = responseText.match(/\*\*(?:What can you do next\?|Next Steps?:?|Suggested Actions:?)\*\*([\s\S]*?)(?=\n\n|\n$|$)/i);
+      let content = responseText;
+      let suggestions: string[] = [];
+
+      if (suggestionMatch?.[1]) {
+        content = responseText.replace(/\*\*(?:What can you do next\?|Next Steps?:?|Suggested Actions:?)\*\*([\s\S]*?)(?=\n\n|\n$|$)/i, '').trim();
+        suggestions = suggestionMatch[1]
+          .split(/[\n•-]/)
+          .map(s => s.trim().replace(/^"|"$/g, ''))
+          .filter(s => s.length > 5 && s.length < 100)
+          .slice(0, 4);
+      }
+
+      // Enhanced fallback suggestions based on context and agent
+      if (suggestions.length === 0) {
+        if (!state.selectedLob) {
+          suggestions = [
+            "Get started with onboarding",
+            "Upload your sales data", 
+            "Show me a sample analysis",
+            "How do I generate a forecast?"
+          ];
+        } else if (agentType === 'onboarding') {
+          suggestions = [
+            "Upload your data file",
+            "Start with data exploration",
+            "Plan a complete analysis workflow",
+            "Learn about forecasting methods"
+          ];
+        } else if (agentType === 'eda') {
+          suggestions = [
+            "Clean and preprocess the data",
+            "Train forecasting models",
+            "Generate business insights"
+          ];
+        } else if (multiAgent) {
+          suggestions = [
+            "Review detailed results",
+            "Generate comprehensive report",
+            "Explore different scenarios",
+            "Download analysis summary"
+          ];
+        } else {
+          suggestions = [
+            "Explore your data (EDA)",
+            "Run complete forecast workflow",
+            "Generate business insights",
+            "Download detailed report"
+          ];
+        }
+      }
+
+      // Enhanced visualization detection
+      const shouldVisualize = state.selectedLob?.hasData && state.selectedLob?.mockData && 
+        (/(visuali[sz]e|chart|plot|graph|trend|distribution|eda|explore)/i.test(messageText + content) ||
+         (agentType === 'eda' && /pattern|trend|seasonality|statistical/i.test(content)));
+
+      let visualization: { data: WeeklyData[]; target: "Value" | "Orders"; isShowing: boolean } | undefined;
+      if (shouldVisualize) {
+        const isRevenue = /(revenue|sales|amount|gmv|income|value)/i.test(messageText + content);
+        visualization = {
+          data: state.selectedLob!.mockData!,
+          target: isRevenue ? 'Value' : 'Orders',
+          isShowing: false,
+        };
+      }
+
+      // Update message with enhanced features
+      dispatch({ 
+        type: 'UPDATE_LAST_MESSAGE', 
+        payload: {
+          content,
+          suggestions,
+          isTyping: false,
+          visualization,
+          agentType,
+          canGenerateReport: !!reportData || multiAgent,
+          reportData
+        }
+      });
+
+    } catch (error) {
+      console.error("Enhanced AI Error:", error);
+      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred. Please try again.';
+      
+      // Check if this is an API key related error
+      const isAPIKeyError = errorMessage.includes('🔑') || errorMessage.includes('API key');
+      
+      let suggestions = ['Try a simpler query', 'Check your connection', 'Upload data first'];
+      
+      if (isAPIKeyError) {
+        suggestions = [
+          'Open API Settings', 
+          'Configure OpenAI Key', 
+          'Configure OpenRouter Key',
+          'Test API Connection'
+        ];
+      }
+      
+      dispatch({ 
+        type: 'UPDATE_LAST_MESSAGE', 
+        payload: {
+          content: `⚠️ ${errorMessage}${isAPIKeyError ? '\n\n**Next Steps:**\n1. Click the Settings button below\n2. Add your OpenAI or OpenRouter API key\n3. Test the connection\n4. Try your request again' : ''}`,
+          isTyping: false,
+          agentType: 'general',
+          suggestions,
+          requiresAPISetup: isAPIKeyError
+        }
+      });
+      dispatch({ type: 'SET_PROCESSING', payload: false });
+    }
+  };
+
   const handleSuggestionClick = (suggestion: string) => {
     // Handle special API setup suggestions
     if (suggestion === 'Open API Settings') {
@@ -1301,6 +1498,22 @@ Please answer the following questions to customize the analysis to your needs:`,
     }
     if (suggestion === 'Test API Connection') {
       setShowAPISettings(true);
+      return;
+    }
+
+    // Handle follow-up question responses
+    if (suggestion === 'Answer the questions above') {
+      // Already handled by the dialog being open
+      return;
+    }
+    if (suggestion === 'Skip questions and use defaults') {
+      handleFollowUpSkip();
+      return;
+    }
+    if (suggestion === 'Cancel analysis') {
+      setShowFollowUpQuestions(false);
+      setFollowUpRequirements(null);
+      setPendingUserMessage('');
       return;
     }
     
