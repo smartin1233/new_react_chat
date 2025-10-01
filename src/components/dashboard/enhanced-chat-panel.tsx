@@ -1372,8 +1372,49 @@ Would you like to customize these parameters, or should I use smart defaults?`,
     }
 
     // Handle follow-up question responses
+    if (suggestion === 'Customize parameters') {
+      // Dialog is already open, user will see the questions
+      return;
+    }
+    if (suggestion === 'Use smart defaults') {
+      handleFollowUpSkip();
+      return;
+    }
+    if (suggestion === 'Tell me more about options') {
+      if (followUpRequirements) {
+        dispatch({ 
+          type: 'ADD_MESSAGE', 
+          payload: {
+            id: crypto.randomUUID(),
+            role: 'assistant',
+            content: `Here are the key customization options for **${followUpRequirements.analysisType.replace('_', ' ')}**:
+
+**🤖 Model Selection:**
+• **Prophet:** Best for seasonal data with holidays/events
+• **XGBoost:** Excellent for complex patterns with many features  
+• **LightGBM:** Fast and accurate for most business scenarios
+• **Ensemble:** Combines multiple models for maximum accuracy
+
+**📊 Forecast Configuration:**
+• **Horizon:** 7 days to 12 months (your choice)
+• **Confidence Levels:** 80%, 90%, 95%, or 99%
+• **Business Context:** Inventory, budgeting, staffing, marketing
+
+**🔧 Advanced Features:**
+• **Seasonal Adjustments:** Holiday effects, weekly patterns
+• **Feature Engineering:** Rolling averages, lag variables
+• **Validation Strategy:** Cross-validation approaches
+
+Ready to customize, or should I proceed with intelligent defaults?`,
+            agentType: 'onboarding',
+            suggestions: ['Customize parameters', 'Use smart defaults']
+          }
+        });
+      }
+      return;
+    }
     if (suggestion === 'Answer the questions above') {
-      // Already handled by the dialog being open
+      // Legacy support - dialog is already open
       return;
     }
     if (suggestion === 'Skip questions and use defaults') {
