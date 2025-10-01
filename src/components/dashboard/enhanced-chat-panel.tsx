@@ -18,6 +18,7 @@ import DataVisualizer from './data-visualizer';
 import { enhancedAPIClient, validateChatMessage, sanitizeUserInput } from '@/lib/enhanced-api-client';
 import { statisticalAnalyzer, insightsGenerator, type DataPoint } from '@/lib/statistical-analysis';
 import { dynamicInsightsAnalyzer } from '@/lib/dynamic-insights-analyzer';
+import { followUpQuestionsService, type FollowUpQuestion, type AnalysisRequirements, type UserResponse } from '@/lib/follow-up-questions';
 import APISettingsDialog from './api-settings-dialog';
 
 type AgentConfig = {
