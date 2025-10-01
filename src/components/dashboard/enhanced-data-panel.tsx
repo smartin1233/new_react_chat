@@ -188,27 +188,29 @@ export default function EnhancedDataPanel({ className }: { className?: string })
         });
       }
 
-      // Business insights
-      if (businessInsights.opportunities.length > 0) {
-        cards.push({
-          id: 'business-opportunity',
-          title: 'Business Opportunity',
-          description: businessInsights.opportunities[0],
-          severity: 'success',
-          actionable: true,
-          recommendation: businessInsights.actionableRecommendations[0]
-        });
-      }
+      // Business insights (only if requested)
+      if (businessInsights) {
+        if (businessInsights.opportunities.length > 0) {
+          cards.push({
+            id: 'business-opportunity',
+            title: 'Business Opportunity',
+            description: businessInsights.opportunities[0],
+            severity: 'success',
+            actionable: true,
+            recommendation: businessInsights.actionableRecommendations[0]
+          });
+        }
 
-      if (businessInsights.riskFactors.length > 0) {
-        cards.push({
-          id: 'business-risk',
-          title: 'Risk Factor Identified',
-          description: businessInsights.riskFactors[0],
-          severity: 'warning',
-          actionable: true,
-          recommendation: businessInsights.actionableRecommendations[1] || 'Monitor closely and develop mitigation strategies'
-        });
+        if (businessInsights.riskFactors.length > 0) {
+          cards.push({
+            id: 'business-risk',
+            title: 'Risk Factor Identified',
+            description: businessInsights.riskFactors[0],
+            severity: 'warning',
+            actionable: true,
+            recommendation: businessInsights.actionableRecommendations[1] || 'Monitor closely and develop mitigation strategies'
+          });
+        }
       }
 
       setInsightCards(cards);
