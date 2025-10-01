@@ -391,7 +391,7 @@ class EnhancedMultiAgentChatHandler {
     this.dispatch = dispatch;
   }
 
-  // Enhanced agent selection with workflow intelligence
+  // Enhanced agent selection - more precise based on user intent
   selectOptimalAgents(userMessage: string, context: any): {
     agents: string[];
     workflow: WorkflowStep[];
@@ -407,25 +407,44 @@ class EnhancedMultiAgentChatHandler {
       selectedAgents.push('onboarding');
       reasoning = 'User needs onboarding guidance';
       workflow = [
-        { id: 'step-1', name: 'Business Setup', status: 'pending', dependencies: [], estimatedTime: '2m', details: 'Select Business Unit and Line of Business', agent: 'Onboarding Guide' },
-        { id: 'step-2', name: 'Data Upload', status: 'pending', dependencies: ['step-1'], estimatedTime: '1m', details: 'Upload your dataset for analysis', agent: 'Onboarding Guide' },
-        { id: 'step-3', name: 'Analysis Planning', status: 'pending', dependencies: ['step-2'], estimatedTime: '30s', details: 'Plan your analysis workflow', agent: 'Onboarding Guide' }
+        { id: 'step-1', name: 'Business Setup', status: 'pending', dependencies: [], estimatedTime: '2m', details: 'Select Business Unit and Line of Business', agent: 'Onboarding Guide' }
       ];
     }
-    // Complete forecasting workflow
-    else if (/(forecast|predict|train|process|complete analysis|end to end)/i.test(lowerMessage)) {
-      selectedAgents.push('eda', 'preprocessing', 'modeling', 'validation', 'forecasting', 'insights');
-      reasoning = 'Complete forecasting workflow requested';
+    // Data exploration only (no forecasting unless specifically requested)
+    else if (/(explore|eda|data quality|pattern|distribution|statistics)/i.test(lowerMessage) && !/(forecast|predict|future)/i.test(lowerMessage)) {
+      selectedAgents.push('eda');
+      reasoning = 'Data exploration and analysis requested';
       workflow = [
-        { id: 'step-1', name: 'Exploratory Data Analysis', status: 'pending', dependencies: [], estimatedTime: '45s', details: 'Comprehensive statistical analysis', agent: 'Data Explorer' },
-        { id: 'step-2', name: 'Data Preprocessing', status: 'pending', dependencies: ['step-1'], estimatedTime: '30s', details: 'Clean and prepare data', agent: 'Data Engineer' },
-        { id: 'step-3', name: 'Model Training', status: 'pending', dependencies: ['step-2'], estimatedTime: '2m', details: 'Train multiple forecasting models', agent: 'ML Engineer' },
-        { id: 'step-4', name: 'Model Validation', status: 'pending', dependencies: ['step-3'], estimatedTime: '30s', details: 'Validate model performance', agent: 'Quality Analyst' },
-        { id: 'step-5', name: 'Forecast Generation', status: 'pending', dependencies: ['step-4'], estimatedTime: '15s', details: 'Generate forecasts with confidence intervals', agent: 'Forecast Analyst' },
-        { id: 'step-6', name: 'Business Insights', status: 'pending', dependencies: ['step-5'], estimatedTime: '20s', details: 'Extract strategic business insights', agent: 'Business Analyst' }
+        { id: 'step-1', name: 'Data Exploration', status: 'pending', dependencies: [], estimatedTime: '30s', details: 'Analyze data patterns and quality', agent: 'Data Explorer' }
       ];
     }
-    // Individual agent selection
+    // Forecasting specifically requested
+    else if (/(forecast|predict|future|projection)/i.test(lowerMessage)) {
+      selectedAgents.push('forecasting');
+      reasoning = 'Forecasting analysis requested';
+      workflow = [
+        { id: 'step-1', name: 'Forecast Generation', status: 'pending', dependencies: [], estimatedTime: '45s', details: 'Generate business forecasts', agent: 'Forecast Analyst' }
+      ];
+    }
+    // Business insights specifically requested
+    else if (/(business insight|recommendation|strategy|opportunity)/i.test(lowerMessage) && !/(forecast|explore)/i.test(lowerMessage)) {
+      selectedAgents.push('insights');
+      reasoning = 'Business insights and recommendations requested';
+      workflow = [
+        { id: 'step-1', name: 'Business Analysis', status: 'pending', dependencies: [], estimatedTime: '30s', details: 'Generate business insights', agent: 'Business Analyst' }
+      ];
+    }
+    // Complete workflow only when specifically requested
+    else if (/(complete analysis|comprehensive|end to end|full workflow)/i.test(lowerMessage)) {
+      selectedAgents.push('eda', 'forecasting', 'insights');
+      reasoning = 'Complete analysis workflow requested';
+      workflow = [
+        { id: 'step-1', name: 'Data Exploration', status: 'pending', dependencies: [], estimatedTime: '30s', details: 'Analyze data patterns', agent: 'Data Explorer' },
+        { id: 'step-2', name: 'Forecast Generation', status: 'pending', dependencies: ['step-1'], estimatedTime: '45s', details: 'Generate forecasts', agent: 'Forecast Analyst' },
+        { id: 'step-3', name: 'Business Insights', status: 'pending', dependencies: ['step-2'], estimatedTime: '30s', details: 'Strategic recommendations', agent: 'Business Analyst' }
+      ];
+    }
+    // Individual agent selection as fallback
     else {
       for (const [agentKey, agent] of Object.entries(ENHANCED_AGENTS)) {
         if (agentKey === 'general') continue;
