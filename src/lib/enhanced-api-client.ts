@@ -14,9 +14,9 @@ interface APIConfig {
 
 // Default configuration - Using OpenRouter as primary since it's working
 const DEFAULT_CONFIG: APIConfig = {
-  openaiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY || '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',
-  openrouterKey: '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',
-  preferredProvider: 'openrouter', // Switch to working provider
+  openaiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY || '',
+  openrouterKey: '',
+  preferredProvider: 'openrouter',
   model: 'gpt-4o-mini'
 };
 
