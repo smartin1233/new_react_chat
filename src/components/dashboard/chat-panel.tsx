@@ -26,7 +26,7 @@ type AgentConfig = {
 import OpenAI from "openai";
 
 const openai = new OpenAI({
-  apiKey: "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",
+  apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY || '',
   dangerouslyAllowBrowser: true,
 });
 
