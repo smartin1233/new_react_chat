@@ -223,40 +223,18 @@ export class DynamicInsightsAnalyzer {
       });
     }
 
-    // Forecasting Phase
-    if (topics.includes('forecasting') || currentPhase === 'forecasting') {
-      config = {
-        ...config,
-        title: 'Forecasting Dashboard',
-        subtitle: 'Future predictions and business planning insights',
-        showForecasting: true,
-        showModelMetrics: true,
-        showBusinessMetrics: true,
-        kpisToShow: ['current_value', 'total_revenue', 'growth_rate', 'efficiency'],
-        primaryMessage: 'Generating forecasts and predictions to guide your business strategy',
-        relevantInsights: [
-          {
-            id: 'forecast-1',
-            title: '14-Day Growth Forecast',
-            description: '12% growth expected over the next two weeks based on current trends',
-            type: 'forecast',
-            priority: 'high',
-            relevantToPhase: ['forecasting', 'insights'],
-            businessValue: 'Accurate forecasts enable proactive planning and resource optimization',
-            nextAction: 'Plan capacity expansion and inventory adjustments'
-          },
-          {
-            id: 'business-opportunity-1',
-            title: 'Scaling Opportunity',
-            description: 'Current growth trajectory suggests opportunity to increase market share',
-            type: 'business_opportunity',
-            priority: 'medium',
-            relevantToPhase: ['forecasting', 'insights'],
-            businessValue: 'Early identification of growth opportunities maximizes competitive advantage',
-            nextAction: 'Develop scaling strategy and resource allocation plan'
-          }
-        ]
-      };
+    // Forecasting Phase - only show if user asked for forecasts/predictions
+    if (userAskedAbout.forecasting) {
+      config.relevantInsights.push({
+        id: 'forecast-1',
+        title: 'Forecast Analysis Ready',
+        description: 'Future predictions generated based on your business data',
+        type: 'forecast',
+        priority: 'high',
+        relevantToPhase: ['forecasting'],
+        businessValue: 'Forecasts help you plan ahead and make informed business decisions',
+        nextAction: 'Review forecast results to plan your business strategy'
+      });
     }
 
     // Business Insights Phase
