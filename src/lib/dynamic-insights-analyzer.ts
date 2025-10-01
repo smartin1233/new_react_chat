@@ -271,7 +271,6 @@ export class DynamicInsightsAnalyzer {
                /model|train|algorithm|machine learning/i.test(userIntent || '')
     };
   }
-  }
 
   /**
    * Generate user-friendly task descriptions
