@@ -251,32 +251,22 @@ export class DynamicInsightsAnalyzer {
       });
     }
 
-    // Complete workflow
+    // Complete workflow - only if user has asked about multiple areas
     if (topics.length > 2) {
-      config = {
-        ...config,
-        title: 'Comprehensive Business Intelligence',
-        subtitle: 'Complete analysis from data exploration to strategic insights',
-        showForecasting: true,
-        showModelMetrics: true,
-        showDataQuality: true,
-        showBusinessMetrics: true,
-        kpisToShow: ['current_value', 'total_revenue', 'total_orders', 'efficiency', 'growth_rate', 'data_quality'],
-        primaryMessage: 'Full-spectrum analysis providing comprehensive business intelligence',
-        relevantInsights: [
-          ...config.relevantInsights,
-          {
-            id: 'comprehensive-1',
-            title: 'End-to-End Analysis Complete',
-            description: 'Comprehensive analysis from data quality to business recommendations completed',
-            type: 'business_opportunity',
-            priority: 'high',
-            relevantToPhase: ['insights'],
-            businessValue: 'Complete business intelligence enables informed strategic decision-making',
-            nextAction: 'Implement recommendations and monitor performance'
-          }
-        ]
-      };
+      config.title = 'Comprehensive Business Intelligence';
+      config.subtitle = 'Complete analysis based on your requests';
+      config.primaryMessage = 'Full analysis providing insights across all areas you explored';
+      
+      config.relevantInsights.push({
+        id: 'comprehensive-1',
+        title: 'Complete Analysis Ready',
+        description: 'Your comprehensive analysis covering all requested areas is complete',
+        type: 'business_opportunity',
+        priority: 'high',
+        relevantToPhase: ['insights'],
+        businessValue: 'Complete business intelligence enables informed decision-making',
+        nextAction: 'Review all insights to plan your business strategy'
+      });
     }
 
     return config;
