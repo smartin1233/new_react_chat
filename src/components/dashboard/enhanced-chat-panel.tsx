@@ -1005,6 +1005,10 @@ export default function EnhancedChatPanel({ className }: { className?: string })
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [performance, setPerformance] = useState<any>(null);
   const [showAPISettings, setShowAPISettings] = useState(false);
+  const [showFollowUpQuestions, setShowFollowUpQuestions] = useState(false);
+  const [followUpRequirements, setFollowUpRequirements] = useState<AnalysisRequirements | null>(null);
+  const [pendingUserMessage, setPendingUserMessage] = useState<string>('');
+  const [questionResponses, setQuestionResponses] = useState<Map<string, any>>(new Map());
 
   // Initialize enhanced chat handler
   if (!enhancedChatHandler) {
