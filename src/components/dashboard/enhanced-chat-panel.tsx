@@ -1086,7 +1086,7 @@ export default function EnhancedChatPanel({ className }: { className?: string })
   const submitMessage = async (messageText: string) => {
     if (!messageText.trim()) return;
     
-    // Check if follow-up questions are needed
+    // Check if follow-up questions are needed (only for customizable scenarios)
     if (followUpQuestionsService.needsFollowUpQuestions(messageText, state)) {
       const requirements = followUpQuestionsService.generateFollowUpQuestions(messageText, state);
       
@@ -1106,21 +1106,26 @@ export default function EnhancedChatPanel({ className }: { className?: string })
           }
         });
 
-        // Add assistant response explaining follow-up questions
+        // Add assistant response explaining follow-up questions with better context
+        const analysisTypeFormatted = requirements.analysisType.replace('_', ' ').charAt(0).toUpperCase() + requirements.analysisType.replace('_', ' ').slice(1);
         dispatch({ 
           type: 'ADD_MESSAGE', 
           payload: {
             id: crypto.randomUUID(),
             role: 'assistant',
-            content: `I'd like to understand your requirements better to provide the most accurate ${requirements.analysisType.replace('_', ' ')} analysis.
+            content: `I see you're requesting **${analysisTypeFormatted}** - this has several customization options that can significantly improve your results!
 
-**Analysis Type:** ${requirements.analysisType.replace('_', ' ').charAt(0).toUpperCase() + requirements.analysisType.replace('_', ' ').slice(1)}
+**What I can customize:**
+• Model selection (Prophet, XGBoost, LightGBM, etc.)
+• Forecast horizon and confidence levels
+• Feature engineering approaches
+• Business context and objectives
+
 **Estimated Time:** ${requirements.estimatedTime}
-**Priority:** ${requirements.priority}
 
-Please answer the following questions to customize the analysis to your needs:`,
+Would you like to customize these parameters, or should I use smart defaults?`,
             agentType: 'onboarding',
-            suggestions: ['Answer the questions above', 'Skip questions and use defaults', 'Cancel analysis']
+            suggestions: ['Customize parameters', 'Use smart defaults', 'Tell me more about options']
           }
         });
         
